@@ -1,0 +1,2905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Asheo Control Center</title>
+  <link rel="stylesheet" href="assets/css/popup-premium.css" />
+  
+  <script src="functions/popup-boot.js"></script>
+  
+  <script src="functions/first-run-guard.js"></script>
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" id="appSidebar">
+      <div class="brand-block">
+        <div class="sidebar-header">
+          <div class="brand">
+            <div class="brand-logo" aria-hidden="true">
+              <img class="brand-logo-mark" src="assets/icons/icon128.png" alt="" draggable="false" />
+            </div>
+            <div class="brand-copy">
+              <h1>Asheo</h1>
+            </div>
+          </div>
+          <button class="sidebar-close" id="sidebarCloseBtn" type="button" aria-label="Close navigation">Close</button>
+        </div>
+      </div>
+
+      <nav class="nav" id="appNav">
+        <button class="nav-item is-active" data-section="dashboard">Home</button>
+        <button class="nav-item" data-section="gateways">Payment Rules</button>
+        <button class="nav-item" data-section="bins">Card Profiles</button>
+        <button class="nav-item" data-section="bypasser">Protection</button>
+        <button class="nav-item" data-section="automation">Automation</button>
+        <button class="nav-item" data-section="settings">Advanced <span class="nav-update-dot" id="navUpdateDot" aria-hidden="true" hidden></span></button>
+        <button class="nav-item" data-section="appearance">Appearance</button>
+        <div class="nav-divider" aria-hidden="true"></div>
+        <button class="nav-item nav-premium" id="premiumNavBtn" type="button" data-section="premium">Premium <span class="nav-premium-badge" aria-hidden="true">Pro</span></button>
+      </nav>
+    </aside>
+    <button class="mobile-nav-overlay" id="mobileNavOverlay" type="button" aria-label="Close navigation" hidden></button>
+
+    <div class="cmd-palette-overlay" id="cmdPalette" hidden>
+      <div class="cmd-palette" role="dialog" aria-modal="true" aria-label="Command palette">
+        <div class="cmd-palette-head">
+          <svg class="cmd-palette-ico" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="cmdPaletteInput" type="text" placeholder="Search or run a command…" autocomplete="off" spellcheck="false" aria-label="Command search" />
+          <kbd class="cmd-kbd">Esc</kbd>
+        </div>
+        <ul class="cmd-palette-list" id="cmdPaletteList" role="listbox"></ul>
+      </div>
+    </div>
+
+    
+    <div class="update-modal-overlay" id="updateModal" hidden>
+      <div class="update-modal" role="dialog" aria-modal="true" aria-labelledby="updateModalTitle">
+        <div class="update-modal-hero">
+          <div class="update-modal-hero-glow" aria-hidden="true"></div>
+          <span class="update-modal-hero-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M12 3l2.09 4.26L19 8.27l-3.5 3.41.83 4.82L12 14.27l-4.33 2.23.83-4.82L5 8.27l4.91-1.01L12 3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h2 class="update-modal-title" id="updateModalTitle">Update available</h2>
+          <span class="update-modal-req" id="updateModalReq" hidden>Required</span>
+          <button class="update-modal-x" id="updateModalClose" type="button" aria-label="Close">&times;</button>
+        </div>
+        <div class="update-modal-verrow" id="updateModalVerRow">
+          <span class="update-modal-ver-cur" id="updateModalVerCur"></span>
+          <span class="update-modal-ver-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="update-modal-ver-new" id="updateModalVer"></span>
+        </div>
+        <div class="update-modal-body">
+          <div class="update-modal-notes" id="updateModalNotes"></div>
+        </div>
+        <div class="update-modal-foot">
+          <button class="btn ghost" id="updateModalDismiss" type="button">Later</button>
+          <button class="btn primary" id="updateModalDownload" type="button">Download update</button>
+        </div>
+      </div>
+    </div>
+
+    <main class="workspace">
+      <div class="update-banner" id="updateBanner" hidden role="button" tabindex="0" aria-label="View update details">
+        <span class="update-banner-spine" aria-hidden="true"></span>
+        <span class="update-banner-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 3l2.09 4.26L19 8.27l-3.5 3.41.83 4.82L12 14.27l-4.33 2.23.83-4.82L5 8.27l4.91-1.01L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="update-banner-text" id="updateBannerText">Update available</span>
+        <span class="update-banner-ver" id="updateBannerVer"></span>
+        <button class="update-banner-download" id="updateBannerDownload" type="button">Download</button>
+        <button class="update-banner-dismiss" id="updateBannerDismiss" type="button" aria-label="Dismiss update">&times;</button>
+      </div>
+
+      <section class="campaign-banner" id="campaignBanner" hidden>
+        <span class="campaign-banner-spine" aria-hidden="true"></span>
+        <div class="campaign-banner-glow" aria-hidden="true"></div>
+        <div class="campaign-banner-main">
+          <span class="campaign-banner-logo" id="campaignLogo" aria-hidden="true"></span>
+          <div class="campaign-banner-titles">
+            <div class="campaign-banner-nameline">
+              <span class="campaign-banner-kicker" aria-hidden="true">Featured</span>
+              <strong id="campaignName">Campaign</strong>
+              <span class="campaign-banner-tag" id="campaignTag"></span>
+            </div>
+            <p class="campaign-banner-blurb" id="campaignBlurb"></p>
+            <ul class="campaign-banner-bullets" id="campaignBullets"></ul>
+          </div>
+        </div>
+        <div class="campaign-banner-actions">
+          <a class="campaign-cta" id="campaignCta" target="_blank" rel="noopener noreferrer" hidden></a>
+          <button class="campaign-banner-open" id="campaignExpand" type="button" aria-label="Open campaign page">Explore Story <span class="campaign-banner-open-arrow" aria-hidden="true">&rarr;</span></button>
+        </div>
+        <button class="campaign-banner-dismiss" id="campaignDismiss" type="button" aria-label="Hide campaign" title="Hide"></button>
+      </section>
+
+      <section class="panel campaign-page" data-panel="campaign" id="campaignPage">
+        <div class="campaign-page-topbar">
+          <button class="campaign-page-back" id="campaignPageBack" type="button" aria-label="Go back">
+            <span class="campaign-page-back-arrow" aria-hidden="true">&larr;</span> Back
+          </button>
+          <nav class="campaign-page-crumbs" aria-label="Breadcrumb">
+            <button class="campaign-page-crumb-home" id="campaignPageCrumbHome" type="button">Home</button>
+            <span class="campaign-page-crumb-sep" aria-hidden="true">/</span>
+            <span class="campaign-page-crumb-current" aria-current="page">Campaign</span>
+          </nav>
+        </div>
+
+        <header class="campaign-page-hero">
+          <div class="campaign-page-hero-art" id="campaignPageArtwork" aria-hidden="true" hidden></div>
+          <div class="campaign-page-hero-inner">
+            <span class="campaign-page-logo" id="campaignPageLogo" aria-hidden="true"></span>
+            <div class="campaign-page-hero-copy">
+              <div class="campaign-page-hero-topline">
+                <span class="campaign-page-kicker" aria-hidden="true">Release</span>
+                <span class="campaign-page-status" id="campaignPageStatus">● Active</span>
+              </div>
+              <div class="campaign-page-hero-nameline">
+                <h1 class="campaign-page-name" id="campaignPageName">Campaign</h1>
+                <span class="campaign-page-tag" id="campaignPageTag"></span>
+                <span class="campaign-page-version" id="campaignPageHeroVersion">v1</span>
+                <span class="campaign-page-channel" id="campaignPageChannel">Stable</span>
+              </div>
+              <p class="campaign-page-blurb" id="campaignPageBlurb"></p>
+            </div>
+            <div class="campaign-page-hero-actions" id="campaignPageHeroActions">
+              <button class="campaign-page-hero-btn campaign-page-hero-btn--primary" id="campaignPageHeroActivate" type="button">Activate License</button>
+              <a class="campaign-page-hero-btn" id="campaignPageHeroCta" target="_blank" rel="noopener noreferrer" hidden></a>
+              <button class="campaign-page-hero-btn campaign-page-hero-btn--ghost" id="campaignPageHeroChangelog" type="button" hidden>Release Notes ↓</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="campaign-page-features" id="campaignPageFeaturesWrap">
+          <h2 class="campaign-page-section-title">Features</h2>
+          <div class="campaign-page-feature-grid" id="campaignPageBenefits"></div>
+        </section>
+
+        <div class="campaign-page-grid">
+          <div class="campaign-page-col campaign-page-col--main">
+
+            <section class="campaign-page-body" id="campaignPageBodyWrap">
+              <h2 class="campaign-page-section-title">Overview</h2>
+              <p class="campaign-page-description" id="campaignPageBody"></p>
+            </section>
+
+            <section class="campaign-page-faq" id="campaignPageFaq" hidden>
+              <h2 class="campaign-page-section-title">FAQ</h2>
+              <div class="campaign-page-faq-list" id="campaignPageFaqList"></div>
+            </section>
+
+            <section class="campaign-page-related" id="campaignPageRelated" hidden>
+              <h2 class="campaign-page-section-title">Related</h2>
+              <div class="campaign-page-related-rail" id="campaignPageRelatedRail"></div>
+            </section>
+          </div>
+
+          <div class="campaign-page-col campaign-page-col--side">
+            <section class="campaign-page-license" id="campaignPageLicense" hidden>
+              <h2 class="campaign-page-section-title">License</h2>
+              <div class="campaign-page-license-live" id="campaignPageLicenseLive" hidden>
+                <div class="campaign-page-license-row"><span class="campaign-page-license-key">Tier</span><span class="campaign-page-license-val" id="campaignPageLicenseTier"></span></div>
+                <div class="campaign-page-license-row"><span class="campaign-page-license-key">Plan</span><span class="campaign-page-license-val" id="campaignPageLicensePlan"></span></div>
+                <div class="campaign-page-license-row"><span class="campaign-page-license-key">Status</span><span class="campaign-page-license-val" id="campaignPageLicenseStatus"></span></div>
+                <div class="campaign-page-license-row"><span class="campaign-page-license-key">Seat</span><span class="campaign-page-license-val" id="campaignPageLicenseSeat"></span></div>
+                <div class="campaign-page-license-row"><span class="campaign-page-license-key">Build</span><span class="campaign-page-license-val" id="campaignPageLicenseBuild"></span></div>
+                <div class="campaign-page-license-row"><span class="campaign-page-license-key">Activated</span><span class="campaign-page-license-val" id="campaignPageLicenseActivated"></span></div>
+              </div>
+              <div class="campaign-page-license-locked" id="campaignPageLicenseLocked" hidden>
+                <p class="campaign-page-license-note">Unlock this with a license key.</p>
+                <div class="campaign-page-license-actions">
+                  <button class="campaign-page-activate" id="campaignPageActivate" type="button">Activate a key</button>
+                  <a class="campaign-cta campaign-page-cta" id="campaignPageBuyCta" target="_blank" rel="noopener noreferrer" hidden></a>
+                </div>
+              </div>
+            </section>
+
+            <section class="campaign-page-offer" id="campaignPageOffer" hidden>
+              <div class="campaign-page-offer-copy">
+                <h2 class="campaign-page-offer-headline" id="campaignPageOfferHeadline"></h2>
+                <p class="campaign-page-offer-detail" id="campaignPageOfferDetail"></p>
+                <span class="campaign-page-offer-code" id="campaignPageOfferCode" hidden></span>
+              </div>
+              <a class="campaign-cta campaign-page-cta" id="campaignPageOfferCta" target="_blank" rel="noopener noreferrer" hidden></a>
+            </section>
+          </div>
+        </div>
+
+        <section class="campaign-page-changelog" id="campaignPageChangelog" hidden>
+          <h2 class="campaign-page-section-title">Release Notes</h2>
+          <div class="campaign-page-changelog-content" id="campaignPageChangelogContent"></div>
+        </section>
+
+        <footer class="campaign-page-footer" id="campaignPageFooter">
+          <button class="campaign-page-footer-activate" id="campaignPageFooterActivate" type="button">Activate license</button>
+          <a class="campaign-cta campaign-page-footer-cta" id="campaignPageFooterCta" target="_blank" rel="noopener noreferrer" hidden>Explore more</a>
+          <button class="campaign-page-footer-dismiss" id="campaignPageFooterDismiss" type="button">Dismiss</button>
+        </footer>
+      </section>
+
+      <header class="topbar">
+        <div class="topbar-main">
+          <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Open navigation" aria-controls="appSidebar" aria-expanded="false">
+            <span class="mobile-menu-icon" aria-hidden="true"></span>
+            <span>Menu</span>
+          </button>
+          <button class="topbar-action-btn" id="openInTabBtn" type="button" aria-label="Open in a full tab" title="Open in a full tab (better on mobile)">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M14 5h5v5M19 5l-9 9M19 13v6H5V5h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="topbar-copy">
+            <h2 id="sectionTitle">Home</h2>
+            <span class="topbar-sub-sep" aria-hidden="true">·</span>
+            <p id="sectionSubtitle">Manage payment rules, BINs, and protection settings.</p>
+          </div>
+          <div class="topbar-insights">
+            <div class="insight-pill">
+              <span id="topStatLabel1">Payment Rules</span>
+              <strong id="topStatValue1">0</strong>
+            </div>
+            <div class="insight-pill">
+              <span id="topStatLabel2">Active BIN</span>
+              <strong id="topStatValue2">--</strong>
+            </div>
+            <div class="insight-pill">
+              <span id="topStatLabel3">Activity</span>
+              <strong id="topStatValue3">0</strong>
+            </div>
+            <div class="insight-pill proxy-pill" id="proxyStatusPill">
+              <span>Proxy</span>
+              <strong id="proxyStatusPillValue">Off</strong>
+            </div>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button class="btn ghost icon-only" id="panelsMinBtn" type="button" title="Minimize all panels" aria-label="Minimize all panels" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button class="btn ghost icon-only" id="quickRefreshBtn" type="button" title="Refresh data" aria-label="Refresh data"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11a8 8 0 1 0-.5 3.5M20 5v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button class="btn" id="commandHintBtn" title="Command palette (Ctrl K)" aria-label="Command palette"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Search<kbd class="cmd-kbd">Ctrl K</kbd></button>
+        </div>
+      </header>
+
+      <section class="panel is-active" data-panel="dashboard">
+
+        
+        <div class="home-kpi-row">
+          <div class="home-kpi" data-tone="blue">
+            <div class="home-kpi-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="home-kpi-body">
+              <span class="home-kpi-label">Payment Rules</span>
+              <strong class="home-kpi-value" id="dashTotalGateways">0/0</strong>
+              <span class="home-kpi-sub">enabled / total</span>
+            </div>
+          </div>
+          <div class="home-kpi" data-tone="purple">
+            <div class="home-kpi-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>
+            </div>
+            <div class="home-kpi-body">
+              <span class="home-kpi-label">Active BIN</span>
+              <strong class="home-kpi-value" id="dashTotalBins">Not set</strong>
+              <span class="home-kpi-sub">primary generation BIN</span>
+            </div>
+          </div>
+          <div class="home-kpi" data-tone="green" id="dashProtectionKpi">
+            <div class="home-kpi-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 8-4-.5-7-3.5-7-8V6l7-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 12l1.8 1.8L15 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="home-kpi-body">
+              <span class="home-kpi-label">Protection</span>
+              <strong class="home-kpi-value" id="dashBypasserState">Off</strong>
+              <span class="home-kpi-sub">master switch</span>
+            </div>
+          </div>
+          <div class="home-kpi" data-tone="amber">
+            <div class="home-kpi-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/></svg>
+            </div>
+            <div class="home-kpi-body">
+              <span class="home-kpi-label">Activity</span>
+              <strong class="home-kpi-value" id="dashLogCount">0</strong>
+              <span class="home-kpi-sub">events captured</span>
+            </div>
+          </div>
+        </div>
+
+        
+        <article class="card list-card bypass-console-card bypass-insights-card home-logs-card">
+          <div class="card-head">
+            <h3>Activity Log</h3>
+            <div class="bypass-log-actions">
+              <button class="btn ghost sm" id="logsExportBtn" disabled>Export 0</button>
+              <button class="btn ghost sm" id="logsClearScopedBtn">Clear</button>
+            </div>
+          </div>
+          <div class="feature-row bypass-log-toolbar">
+            <div class="bypass-log-filters">
+              <button class="btn ghost chip is-active" id="bypassLogFilterAll" data-log-filter="all">All <span class="chip-count" id="logCountAll">0</span></button>
+              <button class="btn ghost chip" id="bypassLogFilterHits" data-log-filter="hit">Hits <span class="chip-count" id="logCountHits">0</span></button>
+              <button class="btn ghost chip" id="bypassLogFilterDeclines" data-log-filter="decline">Declines <span class="chip-count" id="logCountDeclines">0</span></button>
+            </div>
+          </div>
+          <div class="list console-box" id="bypasserLogs"></div>
+          <div class="activity-log-footer" id="activityLogFooter" hidden></div>
+          <button class="activity-log-scroll-top" id="activityLogScrollTop" hidden title="Jump to latest">↑ Latest</button>
+        </article>
+
+        
+          <article class="card home-bin-card" data-algo-panel="home">
+            <div class="home-bin-head">
+              <div class="home-bin-head-left">
+                <span class="section-chip">Quick Set</span>
+                <h3>Generation Source</h3>
+                <p class="card-copy">Pick how cards are generated. Full options live in Card Profiles.</p>
+              </div>
+              <div class="home-bin-head-right">
+                <div class="home-bin-current">
+                  <span class="home-bin-current-label">Active</span>
+                  <strong class="home-bin-current-value" id="algoModeStateHome">BIN mode | primary</strong>
+                </div>
+                <div class="algo-mode-switch home-mode-switch" role="group" aria-label="Home generation mode">
+                  <button class="btn ghost algo-mode-btn is-active" id="algoModeHomeBin" type="button" data-algo-mode="bin">BIN</button>
+                  <button class="btn ghost algo-mode-btn" id="algoModeHomeCc" type="button" data-algo-mode="cc">CC</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="home-bin-body">
+              
+              <div class="algo-bin-tray home-quick-tray" id="algoBinTrayHome">
+                <div class="input-group">
+                  <input id="algoBinPrimaryInputHome" placeholder=" " autocomplete="off" spellcheck="false" inputmode="text" />
+                  <label for="algoBinPrimaryInputHome">Primary BIN · bin|mm|yy</label>
+                </div>
+                <div class="algo-bin-label-wrap" id="algoBinLabelWrapHome" hidden>
+                  <div class="input-group">
+                    <input id="algoBinLabelInputHome" placeholder=" " autocomplete="off" spellcheck="false" maxlength="40" />
+                    <label for="algoBinLabelInputHome">Name (optional) — labels this BIN in Saved</label>
+                  </div>
+                </div>
+                <div class="feature-row algo-bin-actions">
+                  <button class="btn" id="algoBinPrimarySaveHome" type="button">Save BIN</button>
+                  <button class="btn ghost" id="algoBinPrimaryClearHome" type="button">Remove</button>
+                  <button class="algo-bin-name-toggle" id="algoBinNameToggleHome" type="button" aria-expanded="false">＋ name</button>
+                </div>
+              </div>
+
+              
+              <div class="algo-cc-tray home-quick-tray" id="algoCcTrayHome" hidden>
+                <div class="input-group">
+                  <textarea id="algoCcInputHome" placeholder=" " autocomplete="off" spellcheck="false"></textarea>
+                  <label for="algoCcInputHome">CC Inputs (one per line: number|MM|YY|CVV)</label>
+                </div>
+                <div class="feature-row algo-cc-actions">
+                  <button class="btn" id="algoCcApplyHome" type="button">Save Inputs</button>
+                  <button class="btn ghost" id="algoCcClearHome" type="button">Remove</button>
+                  <span class="pill off algo-cc-count" id="algoCcQueueCountHome">Queue 0/10</span>
+                  <label class="cc-lock-toggle" title="Lock: reuse the same card on every swap (no rotation)">
+                    <input type="checkbox" id="toggleCcLockHome" data-cc-lock />
+                    <span>Lock</span>
+                  </label>
+                </div>
+                <div class="algo-cc-queue" id="algoCcQueueHome"></div>
+              </div>
+
+              <p class="muted algo-mode-hint" id="algoModeHintHome">BIN mode uses your saved primary BIN.</p>
+            </div>
+          </article>
+
+      </section>
+
+      <section class="panel" data-panel="gateways">
+        <div class="gw-clipboard-banner" id="gwClipboardBanner" hidden>
+          <span class="gw-clipboard-banner-emoji" aria-hidden="true">📋</span>
+          <span class="gw-clipboard-banner-text">Payment request detected in clipboard — Import?</span>
+          <button class="btn sm gw-clipboard-banner-import" id="gwClipboardBannerImport" type="button">Import</button>
+          <button class="gw-clipboard-banner-dismiss" id="gwClipboardBannerDismiss" type="button" aria-label="Dismiss">&times;</button>
+        </div>
+        <details class="gw-overview-strip">
+          <summary>
+            <span class="gw-overview-strip-label">Statistics &amp; Supported Gateways</span>
+            <button class="gw-overview-link" id="gwOverviewBtn" type="button" aria-expanded="false" aria-controls="gwOverviewPanel">Supported gateways</button>
+          </summary>
+          <section class="gw-overview" id="gwOverviewPanel" aria-label="Gateways overview">
+            <div class="gw-block-head">
+              <span class="gw-block-eyebrow">Statistics</span>
+              <span class="gw-block-hint">Rule counts at a glance</span>
+            </div>
+            <div class="gw-overview-summary" id="gwOverviewSummary"></div>
+            <div class="gw-block-head">
+              <span class="gw-block-eyebrow">Supported Gateways</span>
+              <span class="gw-block-hint">Built-in providers Asheo can detect &amp; process</span>
+            </div>
+            <div class="gw-overview-section">
+              <div class="gw-overview-grid" id="gwOverviewProviders"></div>
+            </div>
+            <p class="muted gw-overview-foot">Default rules ship with Asheo and are always available. Custom rules are ones you add or import — they can be edited, exported and removed.</p>
+          </section>
+        </details>
+        <div class="panel-grid two container-gateways">
+          <section class="bypass-sec is-high gw-builder-sec">
+            <div class="bypass-sec-head">
+              <span class="bypass-sec-eyebrow">Create Payment Rule</span>
+              <span class="bypass-sec-hint">Choose where a rule applies and what it should change</span>
+            </div>
+            <div class="gw-v2-toolbar">
+              <div class="gw-step-strip" aria-label="Rule Flow">
+                <span class="pill gw-step-pill is-active" id="gwStepBasics">Basics</span>
+                <span class="pill gw-step-pill" id="gwStepActions">Rule Actions</span>
+                <span class="pill gw-step-pill" id="gwStepValidation">Validation</span>
+                <span class="pill gw-step-pill" id="gwStepSave">Save</span>
+              </div>
+              <button class="btn ghost btn--sm" id="gwTemplatesBtn" type="button">Templates</button>
+              <div class="gw-assist-row">
+                <span class="gw-assist-status" id="gwHealthBadge">Draft</span>
+                <span class="gw-assist-status gw-assist-conflict" id="gwConflictBadge">No conflicts</span>
+                <span class="muted" id="gwDraftHint">Complete basics to start validation.</span>
+              </div>
+            </div>
+            <div class="gateway-editor-layout">
+              <section class="gateway-section">
+                <div class="gateway-section-head">
+                  <h4>Basic Setup <button class="info-btn" type="button" aria-label="About rule basics" aria-expanded="false" data-info="A rule targets requests by Pattern — a domain like api.stripe.com, or a path like /payments. Give it a Name, then below choose what the rule does to matching requests.">i</button></h4>
+                </div>
+                <div class="form-grid">
+                  <div class="input-group">
+                    <input id="gwName" placeholder=" " required />
+                    <label for="gwName">Rule Name</label>
+                  </div>
+                  <div class="input-group" style="display:flex;gap:6px">
+                    <input id="gwPattern" placeholder=" " required style="flex:1" />
+                    <label for="gwPattern">Pattern (domain or path)</label>
+                    <button class="btn ghost btn--sm" id="gwPatternFromTab" type="button" title="Use the current tab's domain as the pattern">🌐</button>
+                    <button class="btn ghost btn--sm" id="gwPatternFromUrl" type="button" title="Paste a URL or curl command to auto-extract the pattern">📋</button>
+                  </div>
+                  <p class="field-help gateway-pattern-help">
+                    Click 🌐 to use current tab's domain, 📋 to paste a URL/curl. Examples: <code>api.stripe.com</code>, <code>/payments</code>, <code>.*stripe.*</code>.
+                  </p>
+
+                  <div class="gw-pattern-preview" id="gwPatternPreview" hidden></div>
+
+                  <div class="runtime-toggle-row compact-toggle-row">
+                    <div class="setting-copy">
+                      <strong>Use Advanced Pattern <button class="info-btn" type="button" aria-label="About Advanced Pattern" aria-expanded="false" data-info="Treats the Pattern as a regular expression — e.g. .*stripe.* matches any Stripe host. Leave off to match a plain domain or path.">i</button></strong>
+                      <small>Enable only if you need advanced matching.</small>
+                    </div>
+                    <label class="toggle gateway-toggle">
+                      <input class="toggle-input" id="gwRegex" type="checkbox" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+
+                  <div class="runtime-toggle-row compact-toggle-row">
+                    <div class="setting-copy">
+                      <strong>Enabled <button class="info-btn" type="button" aria-label="About Enabled" aria-expanded="false" data-info="When off, the rule is saved but not applied to any request — handy for keeping a rule without activating it.">i</button></strong>
+                      <small>Turn this off to keep the rule saved but inactive.</small>
+                    </div>
+                    <label class="toggle gateway-toggle">
+                      <input class="toggle-input" id="gwEnabled" type="checkbox" checked />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                </div>
+              </section>
+
+              <section class="gateway-section" id="gwCardSection">
+                <div class="gateway-section-head">
+                  <h4>Card Fields <button class="info-btn" type="button" aria-label="About card fields" aria-expanded="false" data-info="Map each generated card part to the field this gateway reads it from. Every card field in one request comes from the SAME generated card. No generator syntax needed — just pick a part and type the field path.">i</button></h4>
+                </div>
+                <p class="field-help">Map a card part to where this gateway puts it in the request. Example: Stripe uses <code>card[number]</code>, <code>card[cvc]</code>, <code>card[exp_month]</code>. Cardholder name comes from your saved identity.</p>
+                <div class="gw-card-rows" id="gwCardRows"></div>
+                <button type="button" class="btn ghost" id="gwCardAddBtn">+ Add card field</button>
+                <template id="gwCardRowTpl">
+                  <div class="gw-card-row">
+                    <select class="gw-card-part" aria-label="Card part">
+                      <option value="number">Card Number</option>
+                      <option value="last4">Card Last 4</option>
+                      <option value="bin">Card BIN (first 6)</option>
+                      <option value="month">Exp Month (MM)</option>
+                      <option value="year4">Exp Year (YYYY)</option>
+                      <option value="year">Exp Year (YY)</option>
+                      <option value="mmYY">Exp MM/YY</option>
+                      <option value="mmYYYY">Exp MM/YYYY</option>
+                      <option value="mmyy">Exp MMYY</option>
+                      <option value="yyMM">Exp YYMM</option>
+                      <option value="YYYYMM">Exp YYYYMM</option>
+                      <option value="MMYYYY">Exp MMYYYY</option>
+                      <option value="cvv">CVV</option>
+                      <option value="holder">Cardholder Name</option>
+                      <option value="brand">Brand</option>
+                      <option value="object">Whole card object</option>
+                    </select>
+                    <span class="gw-card-arrow" aria-hidden="true">→</span>
+                    <input class="gw-card-path" placeholder="e.g. card.number or payment.card.number" aria-label="Field path" />
+                    <button type="button" class="btn ghost gw-card-del" aria-label="Remove field">×</button>
+                  </div>
+                </template>
+              </section>
+
+              <section class="gateway-section">
+                <div class="gateway-section-head gateway-rules-head">
+                  <h4>Rules <button class="info-btn" type="button" aria-label="About rule actions" aria-expanded="false" data-info="Required Fields: make sure these keys exist in the request. Update Request: change or add field values. Remove Fields: strip keys before the request is sent. Add only the actions you need.">i</button></h4>
+                  <div class="rule-controls">
+                    <select id="gwRuleType" aria-label="Choose rule type">
+                      <option value="require">Required Fields</option>
+                      <option value="modify">Update Request</option>
+                      <option value="remove">Remove Fields</option>
+                    </select>
+                    <button type="button" class="btn ghost" id="gwAddRuleBtn">+ Add Rule</button>
+                  </div>
+                </div>
+                <p class="field-help">Add only the rules you need. Keep it simple to start.</p>
+                <div class="gw-rule-chips" id="gwRuleChips" aria-live="polite">
+                  <span class="gw-rule-chip" data-rule-chip="require">Required</span>
+                  <span class="gw-rule-chip" data-rule-chip="modify">Update</span>
+                  <span class="gw-rule-chip" data-rule-chip="remove">Remove</span>
+                </div>
+
+                <div class="gateway-rule-cards" id="gwRuleCards">
+                  <article class="rule-card" id="gwRequireCard" hidden>
+                    <div class="rule-card-head">
+                      <h5>Required Fields <button class="info-btn" type="button" aria-label="About Required Fields" aria-expanded="false" data-info="Comma-separated keys the request must contain. The rule flags a request when any of them are missing.">i</button></h5>
+                      <button type="button" class="btn ghost rule-remove-btn" data-hide-rule="require">Hide</button>
+                    </div>
+                    <div class="input-group">
+                      <input id="gwRequireKeys" placeholder=" " />
+                      <label for="gwRequireKeys">Fields (comma-separated)</label>
+                    </div>
+                    <p class="field-help">Request must contain these fields.</p>
+                  </article>
+
+                  <article class="rule-card" id="gwInjectCard" hidden>
+                    <div class="rule-card-head">
+                      <h5>Update Request <button class="info-btn" type="button" aria-label="About Update Request" aria-expanded="false" data-info="Sets or adds field values in the request. Supports ${now}, ${rand(6)} and ${host} placeholders. Add a row for each field you want to set.">i</button></h5>
+                      <button type="button" class="btn ghost rule-remove-btn" data-hide-rule="modify">Hide</button>
+                    </div>
+                    <div class="gw-card-rows gw-inject-rows" id="gwInjectRows"></div>
+                    <button type="button" class="btn ghost" id="gwInjectAddBtn">+ Add field</button>
+                    <template id="gwInjectRowTpl">
+                      <div class="gw-card-row gw-inject-row">
+                        <input class="gw-inject-key" placeholder=" " aria-label="Field" />
+                        <span class="gw-card-arrow" aria-hidden="true">=</span>
+                        <input class="gw-inject-value" placeholder=" " aria-label="Value" />
+                        <button type="button" class="btn ghost gw-card-del" aria-label="Remove field">×</button>
+                      </div>
+                    </template>
+                    <p class="field-help">One row per field. Use <code>${now}</code>, <code>${rand(6)}</code>, <code>${host}</code> as the whole value to inject a live timestamp, random string, or request host.</p>
+                  </article>
+
+                  <article class="rule-card" id="gwRemoveCard" hidden>
+                    <div class="rule-card-head">
+                      <h5>Remove Fields <button class="info-btn" type="button" aria-label="About Remove Fields" aria-expanded="false" data-info="Comma-separated keys stripped from the request body before it is sent to the gateway.">i</button></h5>
+                      <button type="button" class="btn ghost rule-remove-btn" data-hide-rule="remove">Hide</button>
+                    </div>
+                    <div class="input-group">
+                      <input id="gwRemoveFields" placeholder=" " />
+                      <label for="gwRemoveFields">Fields (comma-separated)</label>
+                    </div>
+                    <p class="field-help">These fields will be removed before sending the request.</p>
+                  </article>
+                </div>
+              </section>
+
+              <details class="gateway-advanced" id="gwAdvanced">
+                <summary>Advanced Settings</summary>
+                <div class="form-grid gateway-advanced-grid">
+                  <div class="input-group">
+                    <input id="gwContentType" placeholder=" " />
+                    <label for="gwContentType">Request type match (optional)</label>
+                  </div>
+                  <div class="input-group">
+                    <input id="gwRegexFlags" placeholder=" " value="i" />
+                    <label for="gwRegexFlags">Pattern options</label>
+                  </div>
+                </div>
+              </details>
+
+              <div class="gw-editor-actions">
+                <button class="btn ghost" id="gwCancelEditBtn" type="button" style="display:none">Cancel Edit</button>
+                <button class="btn ghost" id="gwClearBtn" type="button">Clear</button>
+                <button class="btn" id="gwSaveBtn">Save Rule</button>
+              </div>
+            </div>
+            <details class="gw-tools-rail">
+              <summary>Tools</summary>
+              <div class="feature-row gateway-toolbar">
+                <button class="btn ghost" id="gwExportBtn">Export Rules</button>
+                <button class="btn ghost" id="gwImportBtn">Import Rules</button>
+                <input type="file" id="gwImportFile" accept="application/json" hidden />
+                <button class="btn ghost" id="gwReloadBtn">Reload Rules</button>
+              </div>
+            </details>
+          </section>
+
+          <div class="gw-divider" aria-hidden="true"></div>
+
+          <section class="bypass-sec is-med gw-review-sec">
+            <div class="bypass-sec-head">
+              <span class="bypass-sec-eyebrow">Test &amp; Review</span>
+              <span class="bypass-sec-hint">See which rules match a URL and what each changes</span>
+            </div>
+            <div class="form-grid">
+              <div class="input-group">
+                <input id="gwTestUrl" placeholder=" " />
+                <label for="gwTestUrl">URL or gateway name (e.g. https://api.stripe.com/charges or "stripe")</label>
+              </div>
+              <button class="btn ghost" id="gwTestBtn">Run Test</button>
+            </div>
+            <details class="gw-console" id="gwConsole">
+              <summary>Results</summary>
+              <div class="analyzer-console">
+                <p class="muted analyzer-result" id="gwTestResult">No rule test yet.</p>
+                <div class="gw-test-results" id="gwTestResults"></div>
+              </div>
+            </details>
+          </section>
+        </div>
+
+        <div class="gw-divider" aria-hidden="true"></div>
+
+        <section class="bypass-sec is-med gw-saved-sec">
+          <div class="bypass-sec-head">
+            <span class="bypass-sec-eyebrow">Saved Rules</span>
+            <span class="bypass-sec-hint">Your rule library</span>
+          </div>
+          <div class="gw-saved-toolbar">
+            <div class="input-group gw-search-group">
+              <input id="gwSearch" placeholder=" " />
+              <label for="gwSearch">Search name or pattern</label>
+            </div>
+            <select id="gwFilter" aria-label="Filter rules">
+              <option value="all">Show: All</option>
+              <option value="enabled">Enabled</option>
+              <option value="disabled">Disabled</option>
+              <option value="default">Defaults</option>
+              <option value="custom">Custom</option>
+            </select>
+            <span class="gw-count-text" id="gwCountPill">0 rules</span>
+            <button class="btn ghost sm" id="gwSelectAllBtn" type="button">Select Visible</button>
+            <button class="btn ghost sm" id="gwRefreshBtn" type="button" title="Refresh the payment rules list from storage">Refresh</button>
+            <div class="feature-row gw-filter-chip-row" hidden>
+              <button class="btn ghost chip is-active" id="gwFilterAllChip" type="button">All</button>
+              <button class="btn ghost chip" id="gwFilterEnabledChip" type="button">Enabled</button>
+              <button class="btn ghost chip" id="gwFilterDisabledChip" type="button">Disabled</button>
+              <button class="btn ghost chip" id="gwFilterDefaultChip" type="button">Default</button>
+              <button class="btn ghost chip" id="gwFilterCustomChip" type="button">Custom</button>
+            </div>
+          </div>
+          <div class="feature-row gw-library-bulk-row">
+            <button class="btn ghost sm" id="gwBulkEnableBtn" type="button" disabled>Enable Selected</button>
+            <button class="btn ghost sm" id="gwBulkDisableBtn" type="button" disabled>Disable Selected</button>
+            <button class="btn danger sm" id="gwBulkRemoveBtn" type="button" disabled>Remove Selected</button>
+            <button class="btn ghost sm" id="gwBulkExportBtn" type="button" disabled>Export Selected</button>
+          </div>
+          <div class="list gw-rule-list" id="gatewayList"></div>
+
+          
+          <div class="card encgw-card bypass-premium-unit" id="encGwCard">
+            <div class="encgw-head">
+              <span class="encgw-head-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l7 4v6c0 4.4-3 8.3-7 9.5C8 20.3 5 16.4 5 12V6l7-4z"/><path d="M9 12l2 2 4-4"/></svg>
+              </span>
+              <div class="encgw-head-titles">
+                <span class="encgw-head-eyebrow">Premium · Custom Adyen proxy</span>
+                <strong class="encgw-head-title">Adyen Special gates <button class="info-btn" type="button" aria-label="About Adyen Special gates" aria-expanded="false" data-info="Custom-origin Adyen sites that proxy Adyen through their own origin (pay.example.com/.../payments). Premium-only. The Worker swaps the card server-side and returns the real Adyen response — same flow as the built-in Adyen gate.">i</button></strong>
+              </div>
+            </div>
+            <p class="encgw-lede" id="encGwHint">Built-in encrypted gateways work for free. Add a custom-origin Adyen checkout here and Asheo real-proxies it through the Worker — swapping the card server-side and returning the live Adyen response.</p>
+
+            <div class="encgw-panel" id="encGwPanel">
+              <ul class="encgw-list" id="encGwList"></ul>
+              <div class="encgw-form">
+                <div class="encgw-field">
+                  <label class="encgw-field-label" for="encGwName">Name</label>
+                  <input class="encgw-input" id="encGwName" type="text" placeholder="My Adyen test merchant" autocomplete="off" spellcheck="false" maxlength="80" />
+                </div>
+                <div class="encgw-field">
+                  <label class="encgw-field-label" for="encGwPattern">Checkout URL pattern</label>
+                  <input class="encgw-input" id="encGwPattern" type="text" placeholder="https://pay.site.com/payments" autocomplete="off" spellcheck="false" />
+                </div>
+                <div class="encgw-field">
+                  <label class="encgw-field-label" for="encGwClientKey">Adyen client key</label>
+                  <input class="encgw-input" id="encGwClientKey" type="text" placeholder="live_… or test_…" autocomplete="off" spellcheck="false" />
+                </div>
+                <label class="encgw-toggle-row" title="When on, the server (Asheo Worker) does the Adyen JWE encryption + forwards to the real gateway and returns its response. When off, the page's own Adyen SDK encrypts in-browser (legacy client-side CSE).">
+                  <input class="encgw-toggle" id="encGwForwardMode" type="checkbox" checked />
+                  <span class="encgw-toggle-label">Forward via server (real-proxy) <em>recommended for Adyen Special gates</em></span>
+                </label>
+                <div class="encgw-form-row">
+                  <button class="encgw-save-btn" id="encGwSaveBtn" type="button">Add gateway</button>
+                  <span class="encgw-msg" id="encGwMsg"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="panel" data-panel="bins">
+        <div class="bin-shell">
+          <div class="bin-top-row">
+
+            
+            <section class="bypass-sec bin-saved-sec">
+              <div class="bypass-sec-head">
+                <span class="bypass-sec-eyebrow">Saved BINs</span>
+                <span class="bypass-sec-hint">Click Use to set primary, or + Pool to add</span>
+                <button class="btn ghost sm bin-saved-clear" id="binHistoryClearBtn" type="button">Clear all</button>
+              </div>
+              <div class="bin-history-list" id="binHistoryList"></div>
+            </section>
+
+            
+            <section class="bypass-sec is-high bin-gen-sec">
+              <div class="bypass-sec-head">
+                <span class="bypass-sec-eyebrow">BIN Generation</span>
+                <span class="bypass-sec-hint">Configure how test cards are generated</span>
+              </div>
+
+              <div class="algo-mode-panel" data-algo-panel="bins">
+                <div class="algo-mode-head">
+                  <strong>Generation Mode</strong>
+                  <span class="pill off" id="algoModeStateBins">BIN mode</span>
+                </div>
+                <div class="algo-mode-switch" role="group" aria-label="Card Profiles generation mode">
+                  <button class="btn ghost algo-mode-btn is-active" id="algoModeBinsBin" type="button" data-algo-mode="bin">BIN</button>
+                  <button class="btn ghost algo-mode-btn" id="algoModeBinsCc" type="button" data-algo-mode="cc">CC</button>
+                </div>
+                <div class="algo-bin-route">
+                  <div class="algo-bin-route-head">
+                    <strong>BIN Routing</strong>
+                    <span class="pill off" id="algoBinRouteStateBins">Primary profile</span>
+                  </div>
+                  <div class="algo-bin-route-switch" role="group" aria-label="Card Profiles BIN routing mode">
+                    <button class="btn ghost algo-bin-route-btn is-active" id="algoBinRouteBinsPrimary" type="button" data-bin-routing-mode="primary">Primary Only</button>
+                    <button class="btn ghost algo-bin-route-btn" id="algoBinRouteBinsRandom" type="button" data-bin-routing-mode="random">Multiple</button>
+                  </div>
+                  <p class="muted algo-bin-route-hint" id="algoBinRouteHintBins">Use saved BIN input.</p>
+                </div>
+                <div class="algo-bin-tray" id="algoBinTrayBins">
+                  <div class="algo-bin-row" id="algoBinPrimaryRowBins">
+                    <div class="input-group">
+                      <input id="algoBinPrimaryInputBins" placeholder=" " autocomplete="off" spellcheck="false" inputmode="text" />
+                      <label for="algoBinPrimaryInputBins">Primary BIN · bin|mm|yy</label>
+                    </div>
+                    <div class="algo-bin-label-wrap" id="algoBinLabelWrapBins" hidden>
+                      <div class="input-group">
+                        <input id="algoBinLabelInputBins" placeholder=" " autocomplete="off" spellcheck="false" maxlength="40" />
+                        <label for="algoBinLabelInputBins">Name (optional) — labels this BIN in Saved</label>
+                      </div>
+                    </div>
+                    <div class="feature-row algo-bin-actions">
+                      <button class="btn" id="algoBinPrimarySaveBins" type="button">Save BIN</button>
+                      <button class="btn ghost" id="algoBinPrimaryClearBins" type="button">Remove</button>
+                      <button class="algo-bin-name-toggle" id="algoBinNameToggleBins" type="button" aria-expanded="false">＋ name</button>
+                    </div>
+                  </div>
+                  <div class="algo-bin-row" id="algoBinMultipleRowBins" hidden>
+                    <div class="input-group">
+                      <textarea id="algoBinMultipleInputBins" placeholder=" " autocomplete="off" spellcheck="false"></textarea>
+                      <label for="algoBinMultipleInputBins">Multiple BINs (one per line)</label>
+                    </div>
+                    <div class="feature-row algo-bin-actions">
+                      <button class="btn" id="algoBinMultipleSaveBins" type="button">Save Multiple</button>
+                      <button class="btn ghost" id="algoBinMultipleClearBins" type="button">Remove All</button>
+                      <span class="pill off algo-bin-count" id="algoBinCountBins">0/20</span>
+                    </div>
+                    <div class="algo-bin-list" id="algoBinListBins"></div>
+                  </div>
+                </div>
+                <div class="algo-cc-tray" id="algoCcTrayBins" hidden>
+                  <div class="input-group">
+                    <textarea id="algoCcInputBins" placeholder=" " autocomplete="off" spellcheck="false"></textarea>
+                    <label for="algoCcInputBins">CC Inputs (one per line: number|MM|YY|CVV)</label>
+                  </div>
+                  <div class="feature-row algo-cc-actions">
+                    <button class="btn" id="algoCcApplyBins" type="button">Save Inputs</button>
+                    <button class="btn ghost" id="algoCcClearBins" type="button">Remove Inputs</button>
+                    <span class="pill off algo-cc-count" id="algoCcQueueCountBins">Queue 0/10</span>
+                    <label class="cc-lock-toggle" title="Lock: reuse the same card on every swap (no rotation)">
+                      <input type="checkbox" id="toggleCcLockBins" data-cc-lock />
+                      <span>Lock</span>
+                    </label>
+                  </div>
+                  <div class="algo-cc-queue" id="algoCcQueueBins"></div>
+                </div>
+                <p class="muted algo-mode-hint" id="algoModeHintBins">BIN mode uses your saved BIN input.</p>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </section>
+
+            <section class="panel premium-panel" data-panel="premium" id="premiumPanel">
+        <div class="premium-head">
+          <span class="premium-modal-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M4 8l3.5 3L12 5l4.5 6L20 8l-1.4 9H5.4L4 8z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+          <div>
+            <h2 id="premiumModalTitle">Asheo Premium</h2>
+            <p>License &amp; stealth tools</p>
+          </div>
+          <button class="premium-close" id="premiumModalClose" type="button" aria-label="Close">&times;</button>
+        </div>
+
+        
+        <div class="premium-status-zone" id="premiumStatusZone">
+          <div class="psz-tier" id="premiumStatusText">Checking your plan…</div>
+          <div class="psz-sub" id="premiumSeatMeta"></div>
+          <div class="psz-sub muted" style="font-size:10px;margin-top:4px;user-select:all">
+            Install ID: <code id="premiumInstallId" style="font-size:10px">—</code>
+          </div>
+        </div>
+
+        
+        <div class="premium-buy-zone" id="premiumLicense">
+          <h3>ACTIVATE LICENSE</h3>
+          <ol>
+            <li>Contact <a href="https://t.me/moreash" target="_blank" rel="noopener noreferrer" style="color:rgb(var(--cmp-accent,122,162,255));text-decoration:underline">@moreash</a> on Telegram to buy a key</li>
+            <li>Paste it below and click Activate</li>
+          </ol>
+          <div class="premium-license-row">
+            <input class="premium-license-input" id="premiumLicenseInput" type="text" placeholder="ASHEO-XXXX-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false" />
+            <button class="premium-license-btn" id="premiumLicenseSaveBtn" type="button">Activate</button>
+          </div>
+          <p class="premium-license-msg" id="premiumLicenseMsg"></p>
+        </div>
+
+        
+        <div class="premium-buy-zone" id="premiumLicenseInfo" hidden>
+          <div class="lic-plan-head">
+            <div class="lic-plan-id">
+              <span class="lic-plan-name" id="licPlanName">Premium</span>
+              <span class="lic-key-name" id="licKeyName" hidden></span>
+              <span class="lic-plan-badge" id="licPlanStatus">Active</span>
+            </div>
+            <div class="lic-plan-price" id="licPlanPrice"></div>
+          </div>
+          <div class="premium-license-info-label">License key</div>
+          <div class="premium-license-info-row">
+            <code class="premium-license-key" id="premiumLicenseKeyText">ASHEO-••••-••••-••••</code>
+            <button class="premium-license-icon-btn" id="premiumLicenseRevealBtn" type="button" aria-label="Show license key" title="Show / hide">
+              <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.5"/></svg>
+            </button>
+            <button class="premium-license-icon-btn" id="premiumLicenseCopyBtn" type="button" aria-label="Copy license key" title="Copy">
+              <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M6 15H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.6"/></svg>
+            </button>
+          </div>
+          <div class="lic-fact-grid" id="licFactGrid"></div>
+          <div class="lic-includes-label" id="licIncludesLabel" hidden>Includes</div>
+          <ul class="lic-includes" id="licIncludes"></ul>
+          <button class="premium-license-change" id="premiumLicenseChangeBtn" type="button">Change license key</button>
+        </div>
+
+        <div class="premium-feature-head">FEATURES</div>
+        <ul class="premium-feature-list" id="premiumFeatureList"></ul>
+        <div class="premium-foot">
+        </div>
+        <section class="bypass-sec is-premium">
+                        <div class="bypass-sec-head">
+                          <span class="bypass-sec-eyebrow">Premium <span class="bypass-premium-marker" aria-hidden="true">&#10022;</span></span>
+                          <span class="bypass-sec-hint">Stealth</span>
+                          <span class="pro-pill bypass-premium-pill" aria-hidden="true">Pro</span>
+                        </div>
+        
+                      <div class="card browsermod-card bypass-premium-unit" id="hudCard">
+                        <div class="proxy-head-actions bypass-sec-actions">
+                          <strong class="bypass-unit-title">Live Injection HUD</strong>
+                          <span class="pill off" id="hudStatus">Off</span>
+                        </div>
+                      <div class="browsermod-body">
+                        <div class="runtime-toggle-row">
+                          <div class="setting-copy">
+                            <strong>Show live HUD <button class="info-btn" type="button" aria-label="About Live Injection HUD" aria-expanded="false" data-info="Shows an on-page overlay on the checkout page listing each card Asheo injects and whether it came back a hit, decline, or 3DS — in real time.">i</button></strong>
+                            <small>On-page overlay of every swap and its result, in real time.</small>
+                          </div>
+                          <label class="toggle bypass-toggle">
+                            <input class="toggle-input" type="checkbox" id="hudToggle" />
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                          </label>
+                        </div>
+                      </div>
+                      </div>
+        
+                      <div class="card browsermod-card bypass-premium-unit" id="browserModCard">
+                        <div class="proxy-head-actions bypass-sec-actions">
+                          <strong class="bypass-unit-title">Browser Mods</strong>
+                          <span class="pill off" id="browserModStatus">Off</span>
+                          <button class="card-collapse-btn" id="browserModCollapseBtn" type="button" aria-label="Minimize section" aria-expanded="true">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          </button>
+                        </div>
+                      <div class="browsermod-body" id="browserModBody">
+                        <div class="runtime-toggle-row">
+                          <div class="setting-copy">
+                            <strong>Enable persona</strong>
+                            <small>Spoof browser fingerprint with a coherent device identity.</small>
+                          </div>
+                          <label class="toggle bypass-toggle">
+                            <input class="toggle-input" type="checkbox" id="browserModToggle" />
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                          </label>
+                        </div>
+
+                        <div class="bm-status-strip" id="bmStatusStrip" aria-live="polite">
+                          <span class="bm-status-text" id="bmStatusText">Inactive</span>
+                        </div>
+
+                        <div class="bm-controls" id="bmControls">
+                        
+                        <div class="bm-block">
+                          <div class="algo-bin-route-head"><strong>Device persona</strong></div>
+                          <div class="bm-persona-row">
+                            <select id="bmPersonaSelect" class="bm-persona-select"></select>
+                            <button class="btn sm" id="bmPersonaApplyBtn" type="button">Apply</button>
+                          </div>
+                          <div class="bm-persona-card" id="bmPersonaCard">
+                            <span class="bm-persona-card-label" id="bmPersonaCardLabel"></span>
+                            <span class="bm-persona-card-detail" id="bmPersonaCardDetail"></span>
+                          </div>
+                        </div>
+
+                        
+                        <details class="bm-custom-block" id="bmCustomBlock">
+                          <summary>Custom persona</summary>
+                          <div class="input-group">
+                            <input id="bmCustomUA" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                            <label for="bmCustomUA">User-Agent string</label>
+                          </div>
+                          <div class="bm-custom-grid">
+                            <div class="input-group">
+                              <input id="bmCustomScreenW" type="number" placeholder=" " />
+                              <label for="bmCustomScreenW">Screen width</label>
+                            </div>
+                            <div class="input-group">
+                              <input id="bmCustomScreenH" type="number" placeholder=" " />
+                              <label for="bmCustomScreenH">Screen height</label>
+                            </div>
+                            <div class="input-group">
+                              <input id="bmCustomDPR" type="number" min="1" max="4" step="0.5" placeholder=" " />
+                              <label for="bmCustomDPR">DPR</label>
+                            </div>
+                            <div class="input-group">
+                              <input id="bmCustomTZ" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                              <label for="bmCustomTZ">Timezone (IANA)</label>
+                            </div>
+                            <div class="input-group">
+                              <input id="bmCustomHw" type="number" min="1" max="64" placeholder=" " />
+                              <label for="bmCustomHw">CPU cores</label>
+                            </div>
+                            <div class="input-group">
+                              <input id="bmCustomMem" type="number" min="0.5" max="64" step="0.5" placeholder=" " />
+                              <label for="bmCustomMem">RAM (GB)</label>
+                            </div>
+                          </div>
+                          <div class="bm-custom-toggles">
+                            <label class="bm-custom-toggle"><input type="checkbox" id="bmCustomCanvas" checked /> Canvas noise</label>
+                            <label class="bm-custom-toggle"><input type="checkbox" id="bmCustomWebgl" checked /> WebGL mask</label>
+                            <label class="bm-custom-toggle"><input type="checkbox" id="bmCustomTzMatch" checked /> Match timezone</label>
+                          </div>
+                          <button class="btn sm" id="bmCustomSaveBtn" type="button">Save custom persona</button>
+                        </details>
+
+                        
+                        <div class="runtime-toggle-row">
+                          <div class="setting-copy">
+                            <strong>WebRTC IP leak protection</strong>
+                            <small>Hide your local/VPN IP from WebRTC fingerprinting.</small>
+                          </div>
+                          <label class="toggle bypass-toggle">
+                            <input class="toggle-input" type="checkbox" id="bmWebrtc" />
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                          </label>
+                        </div>
+
+                        
+                        <div class="proxy-field">
+                          <small class="proxy-field-label">Scope</small>
+                          <div class="seg-control" id="bmScopeChips">
+                            <button class="seg-btn is-active" data-bm-scope="global" type="button">Global</button>
+                            <button class="seg-btn" data-bm-scope="allowlist" type="button">Allowlist</button>
+                            <button class="seg-btn" data-bm-scope="blocklist" type="button">Blocklist</button>
+                          </div>
+                          <small class="muted proxy-mode-hint" id="bmScopeHint">Applies on all sites.</small>
+                        </div>
+
+                        <div class="proxy-rules" id="bmScopeRules">
+                          <div class="proxy-rules-input">
+                            <input id="bmDomainInput" type="text" placeholder="example.com or *.example.com" autocomplete="off" spellcheck="false" />
+                            <button class="btn ghost" id="bmDomainAddBtn" type="button">Add</button>
+                          </div>
+                          <div class="proxy-rules-list" id="bmDomainList"></div>
+                        </div>
+
+                        
+                        <div class="runtime-toggle-row">
+                          <div class="setting-copy">
+                            <strong>Pause on captcha pages</strong>
+                            <small>Auto-disable when Turnstile, hCaptcha, or reCAPTCHA is detected.</small>
+                          </div>
+                          <label class="toggle bypass-toggle">
+                            <input class="toggle-input" type="checkbox" id="bmPauseCaptcha" checked />
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                          </label>
+                        </div>
+
+                        <details class="bm-experimental">
+                          <summary>Per-site rules</summary>
+                          <div class="bm-siterule-add">
+                            <select id="bmSiteRuleProfile" class="bm-profile-select" title="Persona to use on these domains"></select>
+                            <input id="bmSiteRuleDomains" type="text" placeholder="example.com, *.example.com" autocomplete="off" spellcheck="false" />
+                            <button class="btn sm" id="bmSiteRuleAddBtn" type="button">Add rule</button>
+                          </div>
+                          <div class="bm-siterules-list" id="bmSiteRulesList"></div>
+                        </details>
+                        </div>
+                      </div>
+                      </div>
+                      </section>
+      </section>
+
+      <section class="panel bypass-panel" data-panel="bypasser">
+        <div class="bypass-shell">
+          
+          <span id="hitCount" hidden>0</span>
+          <span id="declineCount" hidden>0</span>
+          <span id="lastEvent" hidden>--</span>
+          <span id="bypassStatus" hidden>OFF</span>
+
+          
+          <div class="bypass-hero">
+            <div class="bypass-master" id="bypassMaster">
+              <div class="bypass-master-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V5l8-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="bypass-master-copy">
+                <strong>Protection Master Switch</strong>
+                <small id="bypassMasterState">Protection is off — requests pass through untouched.</small>
+              </div>
+              <label class="toggle bypass-toggle bypass-master-toggle">
+                <input class="toggle-input" type="checkbox" id="toggleBypasser" />
+                <span class="toggle-slider" aria-hidden="true"></span>
+              </label>
+            </div>
+          </div>
+
+          
+
+          <div class="bypass-cols">
+
+          
+
+              <section class="bypass-sec is-high">
+                <div class="bypass-sec-head">
+                  <span class="bypass-sec-eyebrow">Card Handling</span>
+                  <span class="bypass-sec-hint">Behaviour applied to intercepted payment requests</span>
+                </div>
+                <div class="toggle-stack">
+                  
+                  <small class="toggle-stack-label">CVV handling</small>
+                  <div class="runtime-toggle-row">
+                    <div class="setting-copy">
+                      <strong>Generate CVV</strong>
+                      <small>Mutually exclusive with Remove CVV.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleCvvGen" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div class="runtime-toggle-row">
+                    <div class="setting-copy">
+                      <strong>Remove CVV</strong>
+                      <small>Strip CVV from request data.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleRemoveCvv" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div class="runtime-toggle-row" id="rowKeepRequiredCvv">
+                    <div class="setting-copy">
+                      <strong>Keep CVV where required</strong>
+                      <small>Send a generated CVV to gateways that reject missing CVV.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleKeepRequiredCvv" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+
+                  
+                  <small class="toggle-stack-label">Request modification</small>
+                  <div class="runtime-toggle-row">
+                    <div class="setting-copy">
+                      <strong>Remove Stripe payment agent</strong>
+                      <small>Strip Stripe telemetry fields from requests.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleRemoveStripe" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+
+                  
+                  <small class="toggle-stack-label">Detection</small>
+                  <div class="runtime-toggle-row">
+                    <div class="setting-copy">
+                      <strong>Gateway Detector</strong>
+                      <small>Show a badge naming the active payment gateway on any site.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleGatewayDetector" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div class="runtime-toggle-row">
+                    <div class="setting-copy">
+                      <strong>Block analytics &amp; tracking</strong>
+                      <small>Block Google Analytics, Tag Manager, Meta Pixel, Hotjar, Clarity, and 20+ other trackers.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleBlockAnalytics" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+
+                  
+                  <small class="toggle-stack-label">Sound</small>
+                  <div class="runtime-toggle-row">
+                    <div class="setting-copy">
+                      <strong>Hit sound</strong>
+                      <small>Play a sound on approved request.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleSoundHit" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div class="runtime-toggle-row">
+                    <div class="setting-copy">
+                      <strong>Decline sound</strong>
+                      <small>Play a sound on declined request.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleSoundDecline" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                </div>
+              </section>
+
+              <section class="bypass-sec is-high">
+                <div class="bypass-sec-head">
+                  <span class="bypass-sec-eyebrow">Card Source</span>
+                  <span class="bypass-sec-hint">Use BIN profiles or paste raw CC numbers</span>
+                </div>
+                <div class="algo-mode-panel" data-algo-panel="bypasser">
+                <div class="algo-mode-head">
+                  <strong id="algoModeLabelBypasser">BIN mode</strong>
+                  <span class="pill off" id="algoModeStateBypasser">Primary · —</span>
+                </div>
+                <div class="algo-mode-switch" role="group" aria-label="Protection card source mode">
+                  <button class="btn ghost algo-mode-btn is-active" id="algoModeBypasserBin" type="button" data-algo-mode="bin">BIN</button>
+                  <button class="btn ghost algo-mode-btn" id="algoModeBypasserCc" type="button" data-algo-mode="cc">CC</button>
+                </div>
+                <div class="algo-bin-route">
+                  <div class="algo-bin-route-head">
+                    <strong>BIN routing</strong>
+                    <span class="pill off" id="algoBinRouteStateBypasser">Primary</span>
+                  </div>
+                  <div class="algo-bin-route-switch" role="group" aria-label="Protection BIN routing mode">
+                    <button class="btn ghost algo-bin-route-btn is-active" id="algoBinRouteBypasserPrimary" type="button" data-bin-routing-mode="primary">Primary</button>
+                    <button class="btn ghost algo-bin-route-btn" id="algoBinRouteBypasserRandom" type="button" data-bin-routing-mode="random">Multiple</button>
+                  </div>
+                  <p class="muted algo-bin-route-hint" id="algoBinRouteHintBypasser">Only your saved primary BIN is used.</p>
+                </div>
+                <div class="algo-bin-tray" id="algoBinTrayBypasser">
+                  <div class="algo-bin-row" id="algoBinPrimaryRowBypasser">
+                    <div class="input-group">
+                      <input id="algoBinPrimaryInputBypasser" placeholder=" " autocomplete="off" spellcheck="false" inputmode="text" />
+                      <label for="algoBinPrimaryInputBypasser">BIN pattern · bin|mm|yy</label>
+                    </div>
+                    <div class="algo-bin-label-wrap" id="algoBinLabelWrapBypasser" hidden>
+                      <div class="input-group">
+                        <input id="algoBinLabelInputBypasser" placeholder=" " autocomplete="off" spellcheck="false" maxlength="40" />
+                        <label for="algoBinLabelInputBypasser">Name (optional) — labels this BIN in Saved</label>
+                      </div>
+                    </div>
+                    <div class="feature-row algo-bin-actions">
+                      <button class="btn" id="algoBinPrimarySaveBypasser" type="button">Save</button>
+                      <button class="btn ghost" id="algoBinPrimaryClearBypasser" type="button">Remove</button>
+                      <button class="algo-bin-name-toggle" id="algoBinNameToggleBypasser" type="button" aria-expanded="false">＋ name</button>
+                    </div>
+                  </div>
+                  <div class="algo-bin-row" id="algoBinMultipleRowBypasser" hidden>
+                    <div class="input-group">
+                      <textarea id="algoBinMultipleInputBypasser" placeholder=" " autocomplete="off" spellcheck="false"></textarea>
+                      <label for="algoBinMultipleInputBypasser">BINs · one per line</label>
+                    </div>
+                    <div class="feature-row algo-bin-actions">
+                      <button class="btn" id="algoBinMultipleSaveBypasser" type="button">Save</button>
+                      <button class="btn ghost" id="algoBinMultipleClearBypasser" type="button">Remove All</button>
+                      <span class="pill off algo-bin-count" id="algoBinCountBypasser">0 of 20</span>
+                    </div>
+                    <div class="algo-bin-list" id="algoBinListBypasser"></div>
+                  </div>
+                </div>
+                <div class="algo-cc-tray" id="algoCcTrayBypasser" hidden>
+                  <div class="input-group">
+                    <textarea id="algoCcInputBypasser" placeholder=" " autocomplete="off" spellcheck="false"></textarea>
+                    <label for="algoCcInputBypasser">CC inputs · number|MM|YY|CVV per line</label>
+                  </div>
+                  <div class="feature-row algo-cc-actions">
+                    <button class="btn" id="algoCcApplyBypasser" type="button">Save</button>
+                    <button class="btn ghost" id="algoCcClearBypasser" type="button">Remove All</button>
+                    <span class="pill off algo-cc-count" id="algoCcQueueCountBypasser">0 of 10</span>
+                    <label class="cc-lock-toggle" title="Lock: reuse the same card on every swap (no rotation)">
+                      <input type="checkbox" id="toggleCcLockBypasser" data-cc-lock />
+                      <span>Lock</span>
+                    </label>
+                  </div>
+                  <div class="algo-cc-queue" id="algoCcQueueBypasser"></div>
+                </div>
+                <p class="muted algo-mode-hint" id="algoModeHintBypasser">BIN mode uses your primary saved BIN only.</p>
+              </div>
+              </section>
+
+
+
+              <section class="bypass-sec is-med">
+                <div class="bypass-sec-head">
+                  <span class="bypass-sec-eyebrow">Network</span>
+                  <span class="bypass-sec-hint">Route browser traffic through a proxy</span>
+                </div>
+              <div class="card proxy-card" id="proxyCard">
+                <div class="proxy-card-head">
+                  <div class="proxy-card-head-title">
+                    <span class="proxy-head-ico" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M2 12h20M12 2c2.5 2.7 4 6.3 4 10s-1.5 7.3-4 10c-2.5-2.7-4-6.3-4-10s1.5-7.3 4-10z"/></svg>
+                    </span>
+                    <strong>Proxy server</strong>
+                  </div>
+                  <div class="proxy-head-actions">
+                    <span class="pill off" id="proxyCardStatus">Off</span>
+                    <button class="card-collapse-btn" id="proxyCollapseBtn" type="button" aria-label="Minimize section" aria-expanded="true">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                  </div>
+                </div>
+              <div class="proxy-card-body" id="proxyCardBody">
+                <div class="runtime-toggle-row">
+                  <div class="setting-copy">
+                    <strong>Use proxy <button class="info-btn" type="button" aria-label="About Use proxy" aria-expanded="false" data-info="Routes browser traffic through the proxy below. Pick a scope: Global (everything), Allowlist (only listed sites), Blocklist (everything except listed), or Incognito (incognito windows only). HTTP/HTTPS support user:pass auth; SOCKS auth is not supported by Chrome.">i</button></strong>
+                    <small>Route browser traffic through a proxy — scope it per-domain.</small>
+                  </div>
+                  <label class="toggle bypass-toggle">
+                    <input class="toggle-input" type="checkbox" id="proxyToggle" />
+                    <span class="toggle-slider" aria-hidden="true"></span>
+                  </label>
+                </div>
+                <p class="muted proxy-status-line" id="proxyStatusLine" hidden></p>
+
+                <div class="proxy-field">
+                  <small class="proxy-field-label">Scope</small>
+                  <div class="seg-control" id="proxyModeChips">
+                    <button class="seg-btn" data-mode="global" type="button">Global</button>
+                    <button class="seg-btn" data-mode="allowlist" type="button">Allowlist</button>
+                    <button class="seg-btn" data-mode="blocklist" type="button">Blocklist</button>
+                    <button class="seg-btn" data-mode="incognito_only" type="button">Incognito</button>
+                  </div>
+                  <small class="muted proxy-mode-hint" id="proxyModeHint"></small>
+                </div>
+
+                <div class="proxy-domain-row" id="proxyDomainRow" hidden>
+                  <div class="proxy-domain-info">
+                    <small>Active tab</small>
+                    <strong id="proxyActiveDomain">—</strong>
+                  </div>
+                  <span class="proxy-now-pill is-off" id="proxyNowPill">Direct</span>
+                  <button class="btn ghost proxy-this-site-btn" id="proxyThisSiteBtn" type="button">Proxy this site</button>
+                </div>
+
+                <div class="input-group input-group--textarea">
+                  <textarea id="proxyInput" rows="4" placeholder=" " autocomplete="off" spellcheck="false"></textarea>
+                  <label for="proxyInput">Proxies — one per line</label>
+                </div>
+                <p class="muted proxy-parsed" id="proxyParsed" hidden></p>
+
+                <div class="proxy-rotate-row" id="proxyRotateRow" hidden>
+                  <label class="proxy-rotate-toggle-row">
+                    <input type="checkbox" id="proxyRotateCheck" />
+                    <span>Rotate proxies</span>
+                  </label>
+                  <label class="proxy-rotate-interval">
+                    <span>every</span>
+                    <input type="number" id="proxyRotateInterval" min="1" max="60" value="1" />
+                    <span>min</span>
+                  </label>
+                </div>
+
+                <details class="proxy-advanced">
+                  <summary>Auth credentials <span class="proxy-auth-indicator" id="proxyAuthIndicator" hidden></span></summary>
+                  <div class="input-group">
+                    <input id="proxyUserInput" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                    <label for="proxyUserInput">Username</label>
+                  </div>
+                  <div class="input-group">
+                    <input id="proxyPassInput" type="password" placeholder=" " autocomplete="off" spellcheck="false" />
+                    <label for="proxyPassInput">Password</label>
+                  </div>
+                </details>
+
+                <div class="proxy-rules">
+                  <div class="seg-control seg-sm" id="proxyRulesTabs">
+                    <button class="seg-btn" data-tab="allow" type="button">Allow list</button>
+                    <button class="seg-btn" data-tab="block" type="button">Block list</button>
+                  </div>
+                  <small class="muted" id="proxyRulesHint"></small>
+                  <div class="proxy-rules-input">
+                    <input id="proxyRuleInput" type="text" placeholder="example.com or *.example.com" autocomplete="off" spellcheck="false" />
+                    <button class="btn ghost" id="proxyRuleAddBtn" type="button">Add</button>
+                  </div>
+                  <div class="proxy-rules-list" id="proxyRulesList"></div>
+                </div>
+
+                <div class="proxy-groups">
+                  <div class="proxy-groups-head">
+                    <small>Proxy groups / presets</small>
+                    <button class="btn ghost" id="proxyGroupSaveBtn" type="button">Save current</button>
+                  </div>
+                  <div class="proxy-groups-list" id="proxyGroupsList"></div>
+                </div>
+
+                <div class="feature-row proxy-actions">
+                  <button class="btn" id="proxySaveBtn" type="button">Save</button>
+                  <button class="btn ghost" id="proxyTestBtn" type="button">Test</button>
+                  <button class="btn ghost" id="proxyClearBtn" type="button">Clear</button>
+                </div>
+                <p class="muted proxy-note">SOCKS auth not supported by Chrome. Incognito scope needs "Allow in incognito" enabled.</p>
+              </div>
+              </div>
+              </section>
+
+              <section class="bypass-sec is-high three-ds-lite" id="threeDsCard">
+                <div class="bypass-sec-head">
+                  <span class="bypass-sec-eyebrow">3DS Bypass <span class="bypass-premium-marker" aria-hidden="true">&#10022;</span></span>
+                  <span class="bypass-sec-hint">Per gateway</span>
+                </div>
+                <div class="toggle-stack">
+                  <div class="runtime-toggle-row">
+                    <div class="setting-copy">
+                      <strong>Stripe 3DS</strong>
+                      <small>On = 3DS2 answers through the Asheo server (UA ladder + retry). Off = the site's own 3DS runs.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleStripe3ds" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div class="runtime-toggle-row">
+                    <div class="setting-copy">
+                      <span class="three-ds-titlerow"><strong>Adyen 3DS</strong></span>
+                      <small>On = browser fingerprint rewrite + 3DS-field strip on our server forward. Off = swap-only (your browser sends it, real fingerprint).</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleAdyen3ds" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div class="runtime-toggle-row">
+                    <div class="setting-copy">
+                      <span class="three-ds-titlerow"><strong>Basis Theory 3DS</strong></span>
+                      <small>On = 3DS sessions run through the Asheo server (challenge mode blanked, device info cleared). Off = untouched.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" id="toggleBasistheory3ds" />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div class="runtime-toggle-row is-upcoming">
+                    <div class="setting-copy">
+                      <span class="three-ds-titlerow"><strong>Checkout.com 3DS</strong><span class="three-ds-soon">Soon</span></span>
+                      <small>Coming soon.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" disabled />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div class="runtime-toggle-row is-upcoming">
+                    <div class="setting-copy">
+                      <span class="three-ds-titlerow"><strong>Tebex 3DS</strong><span class="three-ds-soon">Soon</span></span>
+                      <small>Coming soon.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" disabled />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                  <div class="runtime-toggle-row is-upcoming">
+                    <div class="setting-copy">
+                      <span class="three-ds-titlerow"><strong>Xsolla 3DS</strong><span class="three-ds-soon">Soon</span></span>
+                      <small>Coming soon.</small>
+                    </div>
+                    <label class="toggle bypass-toggle">
+                      <input class="toggle-input" type="checkbox" disabled />
+                      <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                  </div>
+                </div>
+              </section>
+
+              
+
+          </div>
+        </div>
+      </section>
+      <section class="panel bypass-panel automation-panel" data-panel="automation">
+        <div class="bypass-shell">
+                <section class="bypass-sec is-high asheo-ac-card">
+      <div class="bypass-sec-head">
+        <div class="bypass-sec-titles">
+          <span class="bypass-sec-eyebrow">Automation</span>
+          <span class="bypass-sec-hint">Auto-clicker + macro recorder — pick a tab, then a target</span>
+        </div>
+      </div>
+      <div class="asheo-ac-actions">
+        <button class="asheo-ac-card-btn is-primary" id="acStartBtn" type="button">
+          <span class="asheo-ac-btn-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/><circle cx="12" cy="12" r="3"/></svg></span>
+          <span class="asheo-ac-btn-label">Auto-Clicker</span>
+        </button>
+        <button class="asheo-ac-card-btn is-record" id="acRecordBtn" type="button">
+          <span class="asheo-ac-btn-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><circle cx="12" cy="12" r="7"/></svg></span>
+          <span class="asheo-ac-btn-label">Record Macro</span>
+        </button>
+      </div>
+      <div class="asheo-ac-macros">
+        <div class="asheo-ac-macros-head">
+          <span>Saved macros</span>
+          <div class="asheo-ac-macros-tools">
+            <button class="asheo-ac-tool-btn" id="acImportBtn" type="button">Import</button>
+            <button class="asheo-ac-tool-btn" id="acExportBtn" type="button">Export</button>
+          </div>
+        </div>
+        <div class="asheo-ac-search-wrap">
+          <span class="asheo-ac-search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+          <input type="text" id="acSearch" class="asheo-ac-search" placeholder="Search macros…" />
+        </div>
+        <input type="file" id="acImportFile" accept="application/json" hidden />
+        <div class="asheo-ac-macro-list" id="acMacroList"><div class="asheo-ac-empty">No macros yet — record one.</div></div>
+      </div>
+                </section>
+
+        <section class="bypass-sec is-med">
+          <div class="bypass-sec-head">
+            <span class="bypass-sec-eyebrow">Card autofill</span>
+            <span class="bypass-sec-hint">Auto-fill a test card into checkout forms</span>
+          </div>
+        <div class="algo-mode-panel card-filler-panel" data-card-panel="bypasser">
+          <div class="algo-mode-head">
+            <strong>Card Filler</strong>
+            <span class="pill off" id="cardFillerState">On</span>
+          </div>
+          <div class="runtime-toggle-row">
+            <div class="setting-copy">
+              <strong>Auto-fill test card</strong>
+              <small>Auto-fills the saved card into Stripe &amp; standard checkout card fields. Defaults to the 4242 test card.</small>
+            </div>
+            <label class="toggle bypass-toggle">
+              <input class="toggle-input" type="checkbox" id="toggleCardFiller" />
+              <span class="toggle-slider" aria-hidden="true"></span>
+            </label>
+          </div>
+          <div class="card-filler-form" id="cardFillerForm">
+            <div class="algo-bin-route-head">
+              <strong>Fill scope</strong>
+              <span class="pill off" id="cardScopeState">All forms</span>
+            </div>
+            <div class="algo-bin-route-switch" role="group" aria-label="Card fill scope">
+              <button class="btn ghost card-scope-btn" id="cardScopeStripe" type="button" data-card-scope="stripe">Stripe only</button>
+              <button class="btn ghost card-scope-btn is-active" id="cardScopeAll" type="button" data-card-scope="all">All forms</button>
+            </div>
+            <div class="identity-filler-grid card-filler-grid">
+              <div class="input-group identity-span-2">
+                <input id="cardNumberInput" type="text" inputmode="numeric" maxlength="16" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="cardNumberInput">Card number</label>
+              </div>
+              <div class="input-group">
+                <input id="cardExpInput" type="text" inputmode="numeric" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="cardExpInput">Expiry (MM/YY)</label>
+              </div>
+              <div class="input-group">
+                <input id="cardCvcInput" type="text" inputmode="numeric" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="cardCvcInput">CVC</label>
+              </div>
+              <div class="input-group identity-span-2">
+                <input id="cardNameInput" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="cardNameInput">Name on card (optional)</label>
+              </div>
+            </div>
+            <div class="feature-row identity-filler-actions">
+              <button class="btn" id="cardSaveBtn" type="button">Save card</button>
+              <button class="btn ghost" id="cardClearBtn" type="button">Reset to 4242</button>
+            </div>
+            <p class="muted identity-filler-note">Saved locally on this device only. Card fields stay separate from the Identity Filler (billing/shipping details).</p>
+          </div>
+        </div>
+        </section>
+
+        <section class="bypass-sec is-med">
+          <div class="bypass-sec-head">
+            <span class="bypass-sec-eyebrow">Identity autofill</span>
+            <span class="bypass-sec-hint">Auto-fill saved billing &amp; shipping details</span>
+          </div>
+        <div class="algo-mode-panel identity-filler-panel" data-identity-panel="bypasser">
+          <div class="algo-mode-head">
+            <strong>Identity Filler</strong>
+            <span class="pill off" id="identityFillerState">On</span>
+          </div>
+          <div class="runtime-toggle-row">
+            <div class="setting-copy">
+              <strong>Auto-fill saved details</strong>
+              <small>Fills saved name, email, phone &amp; address on Stripe and other standard checkout forms.</small>
+            </div>
+            <label class="toggle bypass-toggle">
+              <input class="toggle-input" type="checkbox" id="toggleIdentityFiller" />
+              <span class="toggle-slider" aria-hidden="true"></span>
+            </label>
+          </div>
+          <div class="identity-filler-form" id="identityFillerForm">
+            <div class="identity-filler-grid">
+              <div class="input-group">
+                <input id="identityFirstName" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="identityFirstName">First name</label>
+              </div>
+              <div class="input-group">
+                <input id="identityLastName" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="identityLastName">Last name</label>
+              </div>
+              <div class="input-group">
+                <input id="identityEmail" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="identityEmail">Email</label>
+              </div>
+              <div class="input-group">
+                <input id="identityPhone" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="identityPhone">Phone</label>
+              </div>
+              <div class="input-group">
+                <select id="identityCountry" autocomplete="off"><option value="">Select country…</option></select>
+                <label for="identityCountry">Country</label>
+              </div>
+              <div class="input-group identity-span-2">
+                <input id="identityAddress1" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="identityAddress1">Address line 1</label>
+              </div>
+              <div class="input-group identity-span-2">
+                <input id="identityAddress2" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="identityAddress2">Address line 2 (optional)</label>
+              </div>
+              <div class="input-group">
+                <input id="identityCity" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="identityCity">City</label>
+              </div>
+              <div class="input-group identity-state-group" id="identityStateGroup">
+                <input id="identityState" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                <select id="identityStateSelect" autocomplete="off" hidden><option value="">Select state…</option></select>
+                <label id="identityStateLabel" for="identityState">State / Province</label>
+              </div>
+              <div class="input-group">
+                <input id="identityPostal" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+                <label for="identityPostal">ZIP / Postal code</label>
+              </div>
+            </div>
+            <div class="feature-row identity-filler-actions">
+              <button class="btn" id="identitySaveBtn" type="button">Save details</button>
+              <button class="btn ghost" id="identityClearBtn" type="button">Clear</button>
+              <button class="btn ghost" id="identityRandomBtn" type="button" title="Fill the form with fresh random identity data">Generate random</button>
+              <button class="btn" id="identityFillNowBtn" type="button" title="Re-run the identity fill on the current page's tab — use after navigating to a checkout/billing form">Fill current page</button>
+              <div class="identity-random-toggle" title="When on, every fill uses fresh random identity data instead of your saved profile">
+                <label class="toggle">
+                  <input class="toggle-input" type="checkbox" id="toggleIdentityRandom" />
+                  <span class="toggle-slider" aria-hidden="true"></span>
+                </label>
+                <span class="identity-random-label">Random each fill</span>
+              </div>
+              <span class="pill off identity-filler-status" id="identitySavedState">Not saved</span>
+            </div>
+            <p class="muted identity-filler-note">Saved locally on this device only. Auto-fills billing/shipping identity fields on Stripe (Address Element / Link) and most standard checkout forms. Card fields stay with the card filler.</p>
+          </div>
+        </div>
+        <div class="group bypass-tools-group">
+          <div class="group-title">Tools</div>
+          <div class="feature-row">
+            <button class="btn ghost" id="soundHitBtn">Test Hit Sound</button>
+            <button class="btn ghost" id="soundDeclineBtn">Test Decline Sound</button>
+          </div>
+          <div class="feature-row sound-custom-row">
+            <div class="sound-custom-col">
+              <small class="toggle-stack-label">Custom hit sound</small>
+              <div class="sound-custom-controls">
+                <input type="file" id="soundHitFile" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg" hidden />
+                <button class="btn ghost btn-sm" id="soundHitUpload" type="button">Upload</button>
+                <button class="btn ghost btn-sm sound-custom-clear" id="soundHitClear" type="button" hidden>Remove</button>
+                <span class="sound-custom-name" id="soundHitName">Default</span>
+              </div>
+            </div>
+            <div class="sound-custom-col">
+              <small class="toggle-stack-label">Custom decline sound</small>
+              <div class="sound-custom-controls">
+                <input type="file" id="soundDeclineFile" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg" hidden />
+                <button class="btn ghost btn-sm" id="soundDeclineUpload" type="button">Upload</button>
+                <button class="btn ghost btn-sm sound-custom-clear" id="soundDeclineClear" type="button" hidden>Remove</button>
+                <span class="sound-custom-name" id="soundDeclineName">Default</span>
+              </div>
+            </div>
+          </div>
+          <div class="feature-row">
+            <button class="btn ghost" id="notifyTestBtn">Test Page Notification</button>
+          </div>
+          <div class="feature-row">
+            <button class="btn ghost" id="bypassOpenAdvanced">Open Advanced Controls</button>
+            <button class="btn ghost" id="bypassOpenAdvancedDiagnostics">Open Diagnostics</button>
+          </div>
+        </div>
+        </section>
+        </div>
+      </section>
+
+            <section class="panel settings-panel" data-panel="settings">
+
+        
+        <article class="card update-card adv-update-card bypass-sec is-med">
+          <div class="bypass-sec-head">
+            <span class="bypass-sec-eyebrow">Updates</span>
+            <span class="status-pill" id="updateStatusPill"><span id="updateStatusPillText">Checking…</span></span>
+          </div>
+          <p class="update-version-line" id="updateVersionLine">Current build: —</p>
+          <p class="update-status-sub" id="updateStatusSub"></p>
+          <div class="update-btn-row" id="updateBtnRow">
+            <button class="btn primary" id="updateSettingsDownloadBtn" type="button" hidden>Download update</button>
+            <button class="btn" id="updateCheckNowBtn" type="button" hidden>Check for updates</button>
+            <span class="update-feed-indicator" id="updateFeedIndicator" hidden></span>
+          </div>
+          <details class="adv-subfold" id="updateFeedDetails">
+            <summary><span class="adv-subfold-summary-text">Custom update feed</span><span class="adv-subfold-dot" id="updateFeedDot" hidden aria-hidden="true"></span></summary>
+            <label class="update-field-label" for="updateUrlInput">Update feed URL — leave blank to use the official Asheo feed</label>
+            <input class="update-input" id="updateUrlInput" type="text" placeholder="Blank = official feed, or https://…/version.json" autocomplete="off" spellcheck="false" />
+            <div class="update-btn-row">
+              <button class="btn ghost" id="updateUrlSaveBtn" type="button">Save feed URL</button>
+              <button class="btn ghost update-url-clear-btn" id="updateUrlClearBtn" type="button" hidden>Clear</button>
+            </div>
+            <p class="muted update-privacy-note">License &amp; update checks send only a random install ID (not a fingerprint) and, if you enter one, your license key — never your cards, BINs, gateway URLs, or page data.</p>
+          </details>
+        </article>
+
+        
+        <details class="adv-fold" id="advFold">
+          <summary class="adv-fold-summary">
+            <span class="adv-fold-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            <span class="adv-fold-text"><strong>Advanced controls</strong><small>Fine-tune every runtime setting individually — for power users</small></span>
+            <span class="status-pill off adv-fold-pill">Optional</span>
+          </summary>
+          <div class="adv-fold-body">
+            <div class="settings-control-toolbar">
+              <input id="settingsControlSearch" type="search" placeholder="Search controls…" />
+              <div class="settings-filter-chips">
+                <button class="btn ghost chip is-active" id="settingsFilterAll" data-filter-mode="all">All</button>
+                <button class="btn ghost chip" id="settingsFilterEnabled" data-filter-mode="enabled">Enabled</button>
+                <button class="btn ghost chip" id="settingsFilterAttention" data-filter-mode="attention">Needs Attention</button>
+              </div>
+            </div>
+
+        <div class="settings-grid">
+
+          
+          <article class="card settings-card settings-control-card gateway-engine-card" data-control-group="gateway">
+            <div class="card-head card-head-stack">
+              <div>
+                <span class="section-chip">Payments</span>
+                <h3>Gateway Engine <span class="version-tag">v3</span></h3>
+                <p class="card-copy adv-card-summary">How Asheo reads &amp; adjusts payment requests. On error, the engine leaves your request untouched and logs a plain-language note.</p>
+              </div>
+            </div>
+            <div class="adv-control-body">
+              <div class="setting-row v2-control-row" data-control-key="gatewayEngineEnabled" data-impact="high" data-warning="Off = all payment requests pass through completely unchanged.">
+                <div class="setting-copy">
+                  <strong>Gateway Engine <button class="info-btn" type="button" aria-label="About Gateway Engine" aria-expanded="false" data-info="Master switch. When off, payment requests pass through completely unchanged.">i</button></strong>
+                  <small class="adv-row-desc">Master switch for payment-request interception.</small>
+                  <span class="adv-impact adv-impact--high">High impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleGatewayEngine" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="gatewayStrictMode" data-impact="medium" data-depends-on="gatewayEngineEnabled">
+                <div class="setting-copy">
+                  <strong>Strict Mode <button class="info-btn" type="button" aria-label="About Strict Mode" aria-expanded="false" data-info="Only apply rules that fully pass validation. Safer; recommended on.">i</button></strong>
+                  <small class="adv-row-desc">Only apply rules that fully pass validation.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                  <span class="adv-depends">↳ requires Gateway Engine</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleGatewayStrict" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="form-grid compact-grid">
+                <div class="input-group">
+                  <select id="gatewayLogLevel" aria-label="Gateway log detail level">
+                    <option value="error">Errors only</option>
+                    <option value="warn">Problems (recommended)</option>
+                    <option value="info">Detailed</option>
+                    <option value="debug">Everything</option>
+                  </select>
+                  <label for="gatewayLogLevel">Log Detail</label>
+                </div>
+                <div class="input-group">
+                  <input id="gatewayTimeoutMs" type="number" min="250" max="15000" step="50" inputmode="numeric" aria-label="Gateway rule timeout in milliseconds" />
+                  <label for="gatewayTimeoutMs">Rule Timeout (ms)</label>
+                </div>
+              </div>
+              <div class="gateway-log" data-gateway-log>
+                <div class="gateway-log-head">
+                  <span class="gateway-log-title">Activity Log</span>
+                  <div class="gateway-log-actions">
+                    <span class="gateway-log-count" id="gatewayLogCount">0 entries</span>
+                    <button type="button" class="btn ghost sm" id="gatewayLogRefreshBtn">Refresh</button>
+                    <button type="button" class="btn ghost sm" id="gatewayLogClearBtn">Clear</button>
+                  </div>
+                </div>
+                <ul class="gateway-log-list" id="gatewayLogList">
+                  <li class="gateway-log-empty">No activity yet — the log fills in as payment requests are handled.</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          
+          <article class="card settings-card settings-control-card" data-control-group="runtime">
+            <div class="card-head card-head-stack">
+              <div>
+                <span class="section-chip">Runtime</span>
+                <h3>Runtime Safeguards</h3>
+                <p class="card-copy adv-card-summary">Core runtime controls for safe request handling and fail-open behavior.</p>
+              </div>
+            </div>
+            <div class="adv-control-body">
+              <div class="setting-row v2-control-row" data-control-key="bypasserEnabled" data-impact="high" data-warning="Off = no test cards are injected; requests fire unchanged.">
+                <div class="setting-copy">
+                  <strong>Protection Runtime <button class="info-btn" type="button" aria-label="About Protection Runtime" aria-expanded="false" data-info="Enable or disable the protection runtime globally.">i</button></strong>
+                  <small class="adv-row-desc">Enable/disable the protection runtime globally.</small>
+                  <span class="adv-impact adv-impact--high">High impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleRuntimeBypasser" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="autoRepairEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Auto Repair Requests <button class="info-btn" type="button" aria-label="About Auto Repair Requests" aria-expanded="false" data-info="Attempt safe request-shape repairs before submission.">i</button></strong>
+                  <small class="adv-row-desc">Attempt safe request-shape repairs before submission.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleAutoRepair" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="strictFailOpenEnabled" data-impact="high" data-depends-on="bypasserEnabled">
+                <div class="setting-copy">
+                  <strong>Strict Fail-Open <button class="info-btn" type="button" aria-label="About Strict Fail-Open" aria-expanded="false" data-info="On runtime errors, dispatch original requests unchanged.">i</button></strong>
+                  <small class="adv-row-desc">On runtime errors, dispatch original requests unchanged.</small>
+                  <span class="adv-impact adv-impact--high">High impact</span>
+                  <span class="adv-depends">↳ requires Protection Runtime</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleStrictFailOpen" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="requestDedupeGuardEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Request Dedupe Guard <button class="info-btn" type="button" aria-label="About Request Dedupe Guard" aria-expanded="false" data-info="Suppress duplicate runtime interceptions within a short window.">i</button></strong>
+                  <small class="adv-row-desc">Suppress duplicate interceptions within a short window.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleRequestDedupeGuard" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="headerSanityGuardEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Header Sanity Guard <button class="info-btn" type="button" aria-label="About Header Sanity Guard" aria-expanded="false" data-info="Reject malformed request headers before runtime mutation.">i</button></strong>
+                  <small class="adv-row-desc">Reject malformed headers before runtime mutation.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleHeaderSanityGuard" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="contentTypeStrictModeEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Content-Type Strict Mode <button class="info-btn" type="button" aria-label="About Content-Type Strict Mode" aria-expanded="false" data-info="Only modify requests when body format matches declared content type.">i</button></strong>
+                  <small class="adv-row-desc">Only modify requests when body matches declared content type.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleContentTypeStrictMode" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="controlDependencyGuardEnabled" data-impact="high">
+                <div class="setting-copy">
+                  <strong>Control Dependency Guard <button class="info-btn" type="button" aria-label="About Control Dependency Guard" aria-expanded="false" data-info="Auto-keep linked safety controls in a valid configuration.">i</button></strong>
+                  <small class="adv-row-desc">Auto-keep linked safety controls in a valid configuration.</small>
+                  <span class="adv-impact adv-impact--high">High impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleControlDependencyGuard" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="form-grid compact-grid">
+                <div class="input-group">
+                  <select id="runtimeSafeModeProfile" aria-label="Runtime safe mode profile">
+                    <option value="balanced">Balanced</option>
+                    <option value="safe_lockdown">Safe Lockdown</option>
+                    <option value="troubleshoot">Troubleshoot</option>
+                    <option value="quiet_testing">Quiet Testing</option>
+                    <option value="max_performance">Max Performance</option>
+                    <option value="stealth">Stealth</option>
+                  </select>
+                  <label for="runtimeSafeModeProfile">Runtime Safe Profile</label>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          
+          <article class="card settings-card settings-control-card" data-control-group="automation">
+            <div class="card-head card-head-stack">
+              <div>
+                <span class="section-chip">Automation</span>
+                <h3>Filler &amp; Recovery</h3>
+                <p class="card-copy adv-card-summary">Card filler behavior and recovery flow controls for testing stability.</p>
+              </div>
+            </div>
+            <div class="adv-control-body">
+              <div class="setting-row v2-control-row" data-control-key="cardFillerEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Card Filler <button class="info-btn" type="button" aria-label="About Card Filler" aria-expanded="false" data-info="Auto-fill the saved test card (4242) into Stripe &amp; standard checkout card fields. Edit the card &amp; fill scope in Protection.">i</button></strong>
+                  <small class="adv-row-desc">Auto-fill the saved test card into checkout fields. Edit in Protection.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleCardFillerAdvanced" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="fillerSmartPacingEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Filler Smart Pacing <button class="info-btn" type="button" aria-label="About Filler Smart Pacing" aria-expanded="false" data-info="Use adaptive field pacing to reduce typing desync on masked inputs.">i</button></strong>
+                  <small class="adv-row-desc">Adaptive pacing to reduce typing desync on masked inputs.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleFillerSmartPacing" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="fillerSubmitGuardEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Filler Submit Guard <button class="info-btn" type="button" aria-label="About Filler Submit Guard" aria-expanded="false" data-info="Delay submit briefly until core fields are verified filled.">i</button></strong>
+                  <small class="adv-row-desc">Delay submit briefly until core fields are verified filled.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleFillerSubmitGuard" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="identityFillerEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Identity Filler <button class="info-btn" type="button" aria-label="About Identity Filler" aria-expanded="false" data-info="Auto-fill saved name, email, phone &amp; address on Stripe and standard checkout forms. Edit saved details in Protection.">i</button></strong>
+                  <small class="adv-row-desc">Auto-fill saved name/email/address. Edit details in Protection.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleIdentityFillerAdvanced" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="gatewayDetectorEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Gateway Detector <button class="info-btn" type="button" aria-label="About Gateway Detector" aria-expanded="false" data-info="On-page badge naming each site's payment gateway, detected from page signals.">i</button></strong>
+                  <small class="adv-row-desc">On-page badge naming each site's payment gateway.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleGatewayDetectorAdvanced" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="profileSensitiveUseGuardEnabled" data-impact="high">
+                <div class="setting-copy">
+                  <strong>Secure Profile Guard <button class="info-btn" type="button" aria-label="About Secure Profile Guard" aria-expanded="false" data-info="Require secure handling before protected profile fields can be used.">i</button></strong>
+                  <small class="adv-row-desc">Require secure handling before protected profile fields are used.</small>
+                  <span class="adv-impact adv-impact--high">High impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleProfileSensitiveGuard" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="profileStrictValidationEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Strict Profile Validation <button class="info-btn" type="button" aria-label="About Strict Profile Validation" aria-expanded="false" data-info="Require valid profile shape before saving and applying profiles.">i</button></strong>
+                  <small class="adv-row-desc">Require valid profile shape before saving/applying profiles.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleProfileStrictValidation" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="profileQuickFillEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Profile Quick Fill <button class="info-btn" type="button" aria-label="About Profile Quick Fill" aria-expanded="false" data-info="Enable profile-aware quick fill helpers in supported contexts.">i</button></strong>
+                  <small class="adv-row-desc">Profile-aware quick fill helpers in supported contexts.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleProfileQuickFill" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+            </div>
+          </article>
+
+          
+          <article class="card settings-card settings-control-card" data-control-group="observability">
+            <div class="card-head card-head-stack">
+              <div>
+                <span class="section-chip">Observability</span>
+                <h3>Visibility &amp; Diagnostics</h3>
+                <p class="card-copy adv-card-summary">Tune logs, overlays, notifications, and runtime telemetry detail level.</p>
+              </div>
+            </div>
+            <div class="adv-control-body">
+              <div class="setting-row v2-control-row" data-control-key="debugLogging" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Detailed Logs <button class="info-btn" type="button" aria-label="About Detailed Logs" aria-expanded="false" data-info="Enable extended logs for troubleshooting.">i</button></strong>
+                  <small class="adv-row-desc">Extended logs for troubleshooting.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleDebug" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="debugPanel" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Overlay Panel <button class="info-btn" type="button" aria-label="About Overlay Panel" aria-expanded="false" data-info="Show the live overlay panel in top frames.">i</button></strong>
+                  <small class="adv-row-desc">Show the live overlay panel in top frames.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleDebugPanel" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="networkTraceEnabled" data-impact="medium" data-warning="Captures request metadata — review before sharing logs.">
+                <div class="setting-copy">
+                  <strong>Network Activity Capture <button class="info-btn" type="button" aria-label="About Network Activity Capture" aria-expanded="false" data-info="Capture requests for deeper review.">i</button></strong>
+                  <small class="adv-row-desc">Capture requests for deeper review.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleNetworkTrace" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="analyticsEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Rule Analytics Logging <button class="info-btn" type="button" aria-label="About Rule Analytics Logging" aria-expanded="false" data-info="Track rule matches and outcomes for advanced diagnostics.">i</button></strong>
+                  <small class="adv-row-desc">Track rule matches and outcomes for diagnostics.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleAnalytics" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="responseHooksEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Response Hooks <button class="info-btn" type="button" aria-label="About Response Hooks" aria-expanded="false" data-info="Run safe post-response provider hooks for advanced outcomes.">i</button></strong>
+                  <small class="adv-row-desc">Run safe post-response provider hooks for advanced outcomes.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleResponseHooks" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="providerCompatTailEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Provider Compat Tail <button class="info-btn" type="button" aria-label="About Provider Compat Tail" aria-expanded="false" data-info="Keep compatibility support for non-Top20 providers.">i</button></strong>
+                  <small class="adv-row-desc">Keep compatibility support for non-Top20 providers.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleCompatTail" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="advancedDiagnosticsEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Advanced Diagnostics <button class="info-btn" type="button" aria-label="About Advanced Diagnostics" aria-expanded="false" data-info="Collect deeper diagnostics details in Advanced tools.">i</button></strong>
+                  <small class="adv-row-desc">Collect deeper diagnostics details in Advanced tools.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleAdvancedDiagnostics" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="notificationsEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Page Notifications <button class="info-btn" type="button" aria-label="About Page Notifications" aria-expanded="false" data-info="Send in-page/runtime status notifications.">i</button></strong>
+                  <small class="adv-row-desc">Send in-page/runtime status notifications.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleNotifications" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="notificationRateLimitEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Notification Rate Limit <button class="info-btn" type="button" aria-label="About Notification Rate Limit" aria-expanded="false" data-info="Reduce repeated alerts by deduping noisy events.">i</button></strong>
+                  <small class="adv-row-desc">Reduce repeated alerts by deduping noisy events.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleNotificationRateLimit" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="audioFeedbackEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Audio Feedback <button class="info-btn" type="button" aria-label="About Audio Feedback" aria-expanded="false" data-info="Enable hit/decline runtime sounds and test playback.">i</button></strong>
+                  <small class="adv-row-desc">Enable hit/decline runtime sounds and test playback.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleAudioFeedback" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="runtimeHealthPingsEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Runtime Health Pings <button class="info-btn" type="button" aria-label="About Runtime Health Pings" aria-expanded="false" data-info="Keep lightweight runtime liveness markers up to date.">i</button></strong>
+                  <small class="adv-row-desc">Keep lightweight runtime liveness markers up to date.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleRuntimeHealthPings" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="controlChangeAuditEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Control Change Audit <button class="info-btn" type="button" aria-label="About Control Change Audit" aria-expanded="false" data-info="Track control changes for diagnostics and support review.">i</button></strong>
+                  <small class="adv-row-desc">Track control changes for diagnostics and support review.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleControlAudit" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="controlLabEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Control Lab <button class="info-btn" type="button" aria-label="About Control Lab" aria-expanded="false" data-info="Enable interactive test buttons and quick diagnostics actions.">i</button></strong>
+                  <small class="adv-row-desc">Enable interactive test buttons and quick diagnostics actions.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleControlLab" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="diagnosticTimelineEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Diagnostic Timeline <button class="info-btn" type="button" aria-label="About Diagnostic Timeline" aria-expanded="false" data-info="Show recent control changes and runtime timeline in diagnostics.">i</button></strong>
+                  <small class="adv-row-desc">Show recent control changes and runtime timeline in diagnostics.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleDiagnosticTimeline" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="activityDigestEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Activity Digest <button class="info-btn" type="button" aria-label="About Activity Digest" aria-expanded="false" data-info="Build an interactive activity digest for the Home dashboard.">i</button></strong>
+                  <small class="adv-row-desc">Build an interactive activity digest for the Home dashboard.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleActivityDigestEnabled" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="diagnosticsStreamEnabled" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Diagnostics Stream <button class="info-btn" type="button" aria-label="About Diagnostics Stream" aria-expanded="false" data-info="Enable the advanced diagnostics event stream endpoint for UI queries.">i</button></strong>
+                  <small class="adv-row-desc">Enable the advanced diagnostics event stream endpoint for UI queries.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleDiagnosticsStreamEnabled" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="presetAutoAuditEnabled" data-impact="low">
+                <div class="setting-copy">
+                  <strong>Preset Auto Audit <button class="info-btn" type="button" aria-label="About Preset Auto Audit" aria-expanded="false" data-info="Add preset/mode context into control deck diagnostics and audit records.">i</button></strong>
+                  <small class="adv-row-desc">Add preset/mode context into diagnostics and audit records.</small>
+                  <span class="adv-impact adv-impact--low">Low impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="togglePresetAutoAudit" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="bulkOpsDryRunDefault" data-impact="medium">
+                <div class="setting-copy">
+                  <strong>Bulk Ops Dry-Run Default <button class="info-btn" type="button" aria-label="About Bulk Ops Dry-Run Default" aria-expanded="false" data-info="Prefer dry-run behavior as the default for bulk operations in advanced tools.">i</button></strong>
+                  <small class="adv-row-desc">Prefer dry-run as the default for bulk operations in advanced tools.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleBulkOpsDryRun" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="form-grid compact-grid">
+                <div class="input-group">
+                  <input id="activityDigestWindowSec" type="number" min="30" max="3600" step="30" placeholder=" " />
+                  <label for="activityDigestWindowSec">Activity Digest Window (seconds)</label>
+                </div>
+                <div class="input-group">
+                  <input id="diagnosticsRetentionLimit" type="number" min="20" max="500" step="5" placeholder=" " />
+                  <label for="diagnosticsRetentionLimit">Diagnostics Retention Limit</label>
+                </div>
+                <div class="input-group">
+                  <input id="telemetrySamplingRate" type="number" min="1" max="100" step="1" placeholder=" " />
+                  <label for="telemetrySamplingRate">Telemetry Sampling Rate (%)</label>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          
+          <article class="card settings-card settings-control-card settings-ruleops-card" data-control-group="recovery">
+            <div class="card-head card-head-stack">
+              <div>
+                <span class="section-chip">Rule Ops Lab</span>
+                <h3>Authoring + Diagnostics</h3>
+                <p class="card-copy adv-card-summary">Advanced rule authoring, simulation, conflict checks, and safe bulk operations.</p>
+              </div>
+              <span class="pill off" id="ruleOpsVersionLabel">legacy</span>
+            </div>
+            <div class="adv-control-body">
+              <div class="feature-row settings-ruleops-preset-row">
+                <div class="gw-template-item"><button class="btn ghost" id="ruleOpsPresetBalanced" type="button">Balanced</button><small class="gw-template-desc">Default — validation assists on, no hard blocks. Good for everyday testing.</small></div>
+                <div class="gw-template-item"><button class="btn ghost" id="ruleOpsPresetStrict" type="button">Strict Guard</button><small class="gw-template-desc">All validation hard-stops on — rejects malformed/incomplete rules before they fire.</small></div>
+                <div class="gw-template-item"><button class="btn ghost" id="ruleOpsPresetTroubleshoot" type="button">Troubleshoot</button><small class="gw-template-desc">Lenient — logs everything, blocks nothing. For tracing why a rule misfires.</small></div>
+                <span class="pill" id="ruleOpsActivePresetLabel">Balanced Rule Ops</span>
+              </div>
+
+              <section class="settings-ruleops-group">
+                <h4>Authoring Assist</h4>
+                <div class="setting-row v2-control-row" data-control-key="ruleOpsV2Enabled" data-impact="high">
+                  <div class="setting-copy">
+                    <strong>Rule Ops V2 <button class="info-btn" type="button" aria-label="About Rule Ops V2" aria-expanded="false" data-info="Enable guided authoring and diagnostics actions for rules.">i</button></strong>
+                    <small class="adv-row-desc">Enable guided authoring and diagnostics actions for rules.</small>
+                    <span class="adv-impact adv-impact--high">High impact</span>
+                  </div>
+                  <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleRuleOpsV2" /><span class="toggle-slider" aria-hidden="true"></span></label>
+                </div>
+                <div class="setting-row v2-control-row" data-control-key="ruleTemplateAssistEnabled" data-impact="low" data-depends-on="ruleOpsV2Enabled">
+                  <div class="setting-copy">
+                    <strong>Rule Template Assist <button class="info-btn" type="button" aria-label="About Rule Template Assist" aria-expanded="false" data-info="Keep template guidance active while creating new rules.">i</button></strong>
+                    <small class="adv-row-desc">Keep template guidance active while creating new rules.</small>
+                    <span class="adv-impact adv-impact--low">Low impact</span>
+                    <span class="adv-depends">↳ requires Rule Ops V2</span>
+                  </div>
+                  <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleRuleTemplateAssist" /><span class="toggle-slider" aria-hidden="true"></span></label>
+                </div>
+                <div class="setting-row v2-control-row" data-control-key="ruleDriftAlertsEnabled" data-impact="medium" data-depends-on="ruleOpsV2Enabled">
+                  <div class="setting-copy">
+                    <strong>Rule Drift Alerts <button class="info-btn" type="button" aria-label="About Rule Drift Alerts" aria-expanded="false" data-info="Warn when active rule sets drift from stable patterns.">i</button></strong>
+                    <small class="adv-row-desc">Warn when active rule sets drift from stable patterns.</small>
+                    <span class="adv-impact adv-impact--med">Medium impact</span>
+                    <span class="adv-depends">↳ requires Rule Ops V2</span>
+                  </div>
+                  <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleRuleDriftAlerts" /><span class="toggle-slider" aria-hidden="true"></span></label>
+                </div>
+              </section>
+
+              <section class="settings-ruleops-group">
+                <h4>Simulation &amp; Validation</h4>
+                <div class="setting-row v2-control-row" data-control-key="ruleSimulationEnabled" data-impact="medium" data-depends-on="ruleOpsV2Enabled">
+                  <div class="setting-copy">
+                    <strong>Rule Simulation <button class="info-btn" type="button" aria-label="About Rule Simulation" aria-expanded="false" data-info="Enable safe dry-run previews for rule matching and actions.">i</button></strong>
+                    <small class="adv-row-desc">Enable safe dry-run previews for rule matching and actions.</small>
+                    <span class="adv-impact adv-impact--med">Medium impact</span>
+                    <span class="adv-depends">↳ requires Rule Ops V2</span>
+                  </div>
+                  <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleRuleSimulation" /><span class="toggle-slider" aria-hidden="true"></span></label>
+                </div>
+                <div class="setting-row v2-control-row" data-control-key="ruleConflictGuardEnabled" data-impact="high" data-depends-on="ruleOpsV2Enabled">
+                  <div class="setting-copy">
+                    <strong>Rule Conflict Guard <button class="info-btn" type="button" aria-label="About Rule Conflict Guard" aria-expanded="false" data-info="Flag overlapping active rules before they cause unstable behavior.">i</button></strong>
+                    <small class="adv-row-desc">Flag overlapping active rules before they cause unstable behavior.</small>
+                    <span class="adv-impact adv-impact--high">High impact</span>
+                    <span class="adv-depends">↳ requires Rule Ops V2</span>
+                  </div>
+                  <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleRuleConflictGuard" /><span class="toggle-slider" aria-hidden="true"></span></label>
+                </div>
+                <div class="feature-row settings-ruleops-action-row">
+                  <button class="btn ghost" id="settingsRuleOpsScanBtn" type="button">Scan Conflict Graph</button>
+                  <button class="btn ghost" id="settingsRuleOpsReplayBtn" type="button">Replay Recent Outcomes</button>
+                </div>
+              </section>
+
+              <section class="settings-ruleops-group">
+                <h4>Recovery &amp; Bulk Ops</h4>
+                <div class="setting-row v2-control-row" data-control-key="ruleBulkSafetyGuardEnabled" data-impact="high" data-depends-on="ruleOpsV2Enabled" data-warning="Off = bulk operations can overwrite default rules.">
+                  <div class="setting-copy">
+                    <strong>Bulk Safety Guard <button class="info-btn" type="button" aria-label="About Bulk Safety Guard" aria-expanded="false" data-info="Protect default rules and block unsafe bulk operations.">i</button></strong>
+                    <small class="adv-row-desc">Protect default rules and block unsafe bulk operations.</small>
+                    <span class="adv-impact adv-impact--high">High impact</span>
+                    <span class="adv-depends">↳ requires Rule Ops V2</span>
+                  </div>
+                  <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleRuleBulkSafetyGuard" /><span class="toggle-slider" aria-hidden="true"></span></label>
+                </div>
+                <div class="setting-row v2-control-row" data-control-key="ruleDiagnosticsVerboseEnabled" data-impact="low">
+                  <div class="setting-copy">
+                    <strong>Verbose Rule Diagnostics <button class="info-btn" type="button" aria-label="About Verbose Rule Diagnostics" aria-expanded="false" data-info="Expand rule diagnostics detail in timeline and exports.">i</button></strong>
+                    <small class="adv-row-desc">Expand rule diagnostics detail in timeline and exports.</small>
+                    <span class="adv-impact adv-impact--low">Low impact</span>
+                  </div>
+                  <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleRuleDiagnosticsVerbose" /><span class="toggle-slider" aria-hidden="true"></span></label>
+                </div>
+                <div class="feature-row settings-ruleops-action-row">
+                  <button class="btn ghost" id="settingsRuleOpsExportBtn" type="button">Export Diagnostics Snapshot</button>
+                  <button class="btn ghost" id="settingsRuleOpsRefreshBtn" type="button">Refresh Rule Ops Data</button>
+                </div>
+              </section>
+            </div>
+          </article>
+
+          
+          <article class="card settings-card settings-control-card settings-vault-card" data-control-group="recovery">
+            <div class="card-head card-head-stack">
+              <div>
+                <span class="section-chip">Vault</span>
+                <h3>Profile Vault</h3>
+                <p class="card-copy adv-card-summary">Encrypt sensitive card-profile fields with a passphrase.</p>
+              </div>
+              <span class="status-pill" id="vaultStatusPill"><span>Locked</span></span>
+            </div>
+            <div class="adv-control-body">
+              <p class="muted vault-explainer" id="vaultStatusHint">Secure profile storage is locked.</p>
+              <div class="setting-row v2-control-row" data-control-key="vaultEnabled" data-impact="high" data-warning="Off = sensitive profile fields stored in plain text.">
+                <div class="setting-copy">
+                  <strong>Vault Enabled <button class="info-btn" type="button" aria-label="About Vault Enabled" aria-expanded="false" data-info="Store sensitive profile fields only in encrypted vault storage.">i</button></strong>
+                  <small class="adv-row-desc">Store sensitive profile fields only in encrypted vault storage.</small>
+                  <span class="adv-impact adv-impact--high">High impact</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleVaultEnabled" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="setting-row v2-control-row" data-control-key="vaultSessionUnlockRequired" data-impact="medium" data-depends-on="vaultEnabled">
+                <div class="setting-copy">
+                  <strong>Session Unlock Required <button class="info-btn" type="button" aria-label="About Session Unlock Required" aria-expanded="false" data-info="Require unlock before secure profile updates can be written.">i</button></strong>
+                  <small class="adv-row-desc">Require unlock before secure profile updates can be written.</small>
+                  <span class="adv-impact adv-impact--med">Medium impact</span>
+                  <span class="adv-depends">↳ requires Vault Enabled</span>
+                </div>
+                <label class="toggle settings-toggle"><input class="toggle-input" type="checkbox" id="toggleVaultSessionRequired" /><span class="toggle-slider" aria-hidden="true"></span></label>
+              </div>
+              <div class="form-grid compact-grid">
+                <div class="input-group">
+                  <input id="vaultSessionTtlSeconds" type="number" min="60" max="86400" step="60" placeholder=" " />
+                  <label for="vaultSessionTtlSeconds">Session TTL (seconds)</label>
+                </div>
+                <div class="input-group">
+                  <input id="vaultPassphraseInput" type="password" placeholder=" " autocomplete="off" />
+                  <label for="vaultPassphraseInput">Passphrase</label>
+                </div>
+                <div class="input-group">
+                  <input id="vaultNewPassphraseInput" type="password" placeholder=" " autocomplete="off" />
+                  <label for="vaultNewPassphraseInput">New Passphrase (for rotate)</label>
+                </div>
+              </div>
+              <div class="feature-row">
+                <button class="btn" id="vaultUnlockBtn">Unlock Vault</button>
+                <button class="btn ghost" id="vaultLockBtn">Lock Vault</button>
+                <button class="btn ghost" id="vaultRotateBtn">Rotate Passphrase</button>
+              </div>
+            </div>
+          </article>
+
+          
+          <article class="card settings-card settings-control-card settings-recovery-card" data-control-group="recovery">
+            <div class="card-head card-head-stack">
+              <div>
+                <span class="section-chip">Recovery</span>
+                <h3>Backup &amp; Recovery</h3>
+                <p class="card-copy adv-card-summary">Export a backup before recovery actions, then restore safely when needed.</p>
+              </div>
+            </div>
+            <div class="adv-control-body">
+              <div class="recovery-grid">
+                <section class="recovery-lane">
+                  <div class="recovery-lane-head">
+                    <h4>Backup Snapshot</h4>
+                    <span class="pill">Recommended</span>
+                  </div>
+                  <p class="muted">Export your current rules, profiles, and preferences. Import from trusted backup files only.</p>
+                  <div class="button-group recovery-primary-actions">
+                    <button class="btn" id="settingsBackupBtn">Export Backup</button>
+                    <button class="btn ghost" id="settingsFullProfileBtn">Full Profile Export</button>
+                    <button class="btn ghost" id="settingsRestoreBtn">Import Backup</button>
+                    <input type="file" id="settingsRestoreFile" accept="application/json" hidden />
+                  </div>
+                </section>
+                <section class="recovery-lane recovery-lane-danger">
+                  <div class="recovery-lane-head">
+                    <h4>Reset Tools</h4>
+                    <span class="pill off">Use With Care</span>
+                  </div>
+                  <p class="muted">These actions clear local data and cannot be undone. Export a backup first.</p>
+                  <div class="feature-col settings-reset-list">
+                    <button class="btn danger" id="resetLogsBtn">Clear Activity Logs</button>
+                    <button class="btn danger" id="resetGatewaysBtn">Reset Custom Rules</button>
+                    <button class="btn danger" id="resetBinsBtn">Reset Card Profiles</button>
+                    <button class="btn danger" id="resetPrefsBtn">Reset CVV Preferences</button>
+                  </div>
+                </section>
+              </div>
+              <p class="muted recovery-footnote">Recovery tip: export after major changes so rollback is quick and clean.</p>
+            </div>
+          </article>
+
+          
+          <article class="card settings-card settings-control-card settings-lab-card" data-control-group="observability">
+            <div class="card-head card-head-stack">
+              <div>
+                <span class="section-chip">Control Lab</span>
+                <h3>Interactive Tests</h3>
+                <p class="card-copy adv-card-summary">Fire feedback signals to confirm sounds and notifications work — nothing here changes live behavior.</p>
+              </div>
+            </div>
+            <div class="adv-control-body">
+              <div class="lab-test-grid">
+                <button class="btn ghost lab-test-tile" id="settingsTestHitSoundBtn">
+                  <span class="lab-test-emoji" aria-hidden="true">🔔</span>
+                  <span class="lab-test-label">Hit Sound</span>
+                </button>
+                <button class="btn ghost lab-test-tile" id="settingsTestDeclineSoundBtn">
+                  <span class="lab-test-emoji" aria-hidden="true">🔕</span>
+                  <span class="lab-test-label">Decline Sound</span>
+                </button>
+                <button class="btn ghost lab-test-tile" id="settingsTestNotifyBtn">
+                  <span class="lab-test-emoji" aria-hidden="true">💬</span>
+                  <span class="lab-test-label">Notification</span>
+                </button>
+                <button class="btn ghost lab-test-tile" id="settingsRefreshDiagnosticsBtn">
+                  <span class="lab-test-emoji" aria-hidden="true">🔄</span>
+                  <span class="lab-test-label">Refresh Diagnostics</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          
+          <article class="card settings-card advanced-telemetry-card bypass-sec is-med">
+            <div class="bypass-sec-head">
+              <span class="bypass-sec-eyebrow">Advanced</span>
+              <h3>System Snapshot</h3>
+              <span class="bypass-sec-hint">Deep checks, service status, and recent activity</span>
+              <span class="pill" id="diagRuntimeStamp">--</span>
+            </div>
+            <div class="diagnostics-shell">
+              <section class="diag-block">
+                <div class="diag-head">
+                  <strong>System Snapshot</strong>
+                </div>
+                <div id="diagnosticsBox" class="diagnostics-panel diagnostics-grid">Loading system checks...</div>
+              </section>
+              <section class="diag-block">
+                <div class="diag-head">
+                  <strong>Recent Network Activity</strong>
+                  <span class="pill" id="diagNetworkCount">0 events</span>
+                </div>
+                <div id="diagNetworkList" class="diag-feed"></div>
+              </section>
+              <section class="diag-block">
+                <div class="diag-head">
+                  <strong>Rule Activity</strong>
+                  <span class="pill" id="diagAnalyticsCount">0 tracked</span>
+                </div>
+                <div id="diagAnalyticsList" class="diag-feed"></div>
+              </section>
+              <section class="diag-block">
+                <div class="diag-head">
+                  <strong>Rule Conflict Summary</strong>
+                  <span class="pill" id="diagRuleConflictCount">0 duplicate groups</span>
+                </div>
+                <div class="diag-feed">
+                  <article class="diag-feed-item">
+                    <strong>Use Rule Ops scan to refresh conflict diagnostics.</strong>
+                    <span>Conflict hints are safe summaries only and do not expose raw payload data.</span>
+                  </article>
+                </div>
+              </section>
+              <section class="diag-block">
+                <div class="diag-head">
+                  <strong>Rule Ops Timeline</strong>
+                  <span class="pill" id="diagRuleOpsAuditCount">0 events</span>
+                </div>
+                <div id="diagRuleOpsAuditList" class="diag-feed"></div>
+              </section>
+              <section class="diag-block">
+                <div class="diag-head">
+                  <strong>Control Timeline</strong>
+                  <span class="pill" id="diagControlAuditCount">0 changes</span>
+                </div>
+                <div id="diagControlAuditList" class="diag-feed"></div>
+              </section>
+            </div>
+            <div class="analytics-panel advanced-analytics-panel">
+              <div class="analytics-header">Rule Analytics</div>
+              <div class="analytics-stats">
+                <div class="stat"><span>Total</span><strong id="gw-total">0</strong></div>
+                <div class="stat"><span>Active</span><strong id="gw-active">0</strong></div>
+                <div class="stat"><span>Match</span><strong id="gw-match">0</strong></div>
+                <div class="stat"><span>Applied</span><strong id="gw-applied">0</strong></div>
+                <div class="stat"><span>Success %</span><strong id="gw-success">0%</strong></div>
+              </div>
+              <div class="analytics-band">
+                <div class="analytics-meter">
+                  <div class="analytics-meter-bar" id="gw-coverage-bar"></div>
+                </div>
+                <div class="analytics-highlights">
+                  <div class="analytics-highlight"><span>Top Rule</span><strong id="gw-top-gateway">--</strong></div>
+                  <div class="analytics-highlight"><span>Dormant</span><strong id="gw-dormant">0</strong></div>
+                  <div class="analytics-highlight"><span>Unstable</span><strong id="gw-unstable">0</strong></div>
+                </div>
+              </div>
+              <div class="analytics-columns">
+                <section class="analytics-section">
+                  <div class="analytics-subhead">Top Rules</div>
+                  <div class="analytics-list" id="gw-analytics-list"></div>
+                </section>
+                <section class="analytics-section">
+                  <div class="analytics-subhead">Suggestions</div>
+                  <div class="analytics-suggestions" id="gw-suggestions"></div>
+                </section>
+              </div>
+            </div>
+          </article>
+
+          
+          <article class="card settings-card appearance-shortcut-card bypass-sec is-med">
+            <div class="bypass-sec-head">
+              <span class="bypass-sec-eyebrow">Appearance</span>
+              <span class="bypass-sec-hint">Customise accent colour, glow, radius, button style, animations and more</span>
+            </div>
+            <button class="btn" id="settingsGoAppearanceBtn" type="button">Open Appearance Settings →</button>
+          </article>
+
+          </div>
+          </div>
+        </details>
+      </section>
+
+      
+
+            <section class="panel appearance-panel" data-panel="appearance">
+
+        
+        <article class="card appearance-hero-card bypass-sec is-high">
+          <div class="bypass-sec-head">
+            <span class="bypass-sec-eyebrow">Customization</span>
+            <h3>UI Appearance</h3>
+            <span class="bypass-sec-hint">A premium design-system editor. Every choice updates the preview below instantly — read the preview, not the labels.</span>
+            <div class="appearance-hero-right">
+              <button class="btn ghost sm" id="appearanceResetBtn" type="button">Reset All</button>
+            </div>
+          </div>
+
+          
+          <div class="apv" aria-hidden="true">
+            <div class="apv-sidebar">
+              <span class="apv-brand"></span>
+              <span class="apv-nav is-active"></span>
+              <span class="apv-nav"></span>
+              <span class="apv-nav"></span>
+              <span class="apv-nav"></span>
+            </div>
+            <div class="apv-main">
+              <div class="apv-header">
+                <span class="apv-title">Asheo</span>
+                <span class="apv-pill">Ready</span>
+              </div>
+              <div class="apv-body">
+                <div class="apv-card">
+                  <span class="apv-card-head"></span>
+                  <span class="apv-line"></span>
+                  <span class="apv-line apv-line-short"></span>
+                  <div class="apv-card-foot">
+                    <span class="apv-toggle" role="presentation"></span>
+                    <input class="apv-input" type="text" value="4242 4242 4242 4242" tabindex="-1" readonly />
+                    <button class="apv-button" type="button" tabindex="-1">Run</button>
+                  </div>
+                </div>
+                <div class="apv-type">Aa 0123 — Asheo</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        
+        <section class="bypass-sec is-high app-zone app-zone--theme">
+          <div class="bypass-sec-head">
+            <span class="bypass-sec-eyebrow">Theme &amp; Color</span>
+            <span class="bypass-sec-hint">Starting points, accent, and theme mode</span>
+          </div>
+
+          
+          <div class="appearance-row">
+            <div class="appearance-row-label">
+              <div class="appearance-row-title">Presets</div>
+              <div class="appearance-row-sub">Starting points — tweak anything below</div>
+            </div>
+            <div class="appearance-row-ctrl appearance-row-ctrl--wrap">
+              <div class="theme-preset-rail">
+                <button class="theme-preset-btn" data-preset="carbon"  type="button"><span class="tp-dot" style="--tp-a:#9aa6b8;--tp-b:#000"></span>Carbon</button>
+                <button class="theme-preset-btn" data-preset="inferno" type="button"><span class="tp-dot" style="--tp-a:#ff4f4f;--tp-b:#000"></span>Inferno</button>
+                <button class="theme-preset-btn" data-preset="forest"  type="button"><span class="tp-dot" style="--tp-a:#3ddc8e;--tp-b:#000"></span>Forest</button>
+                <button class="theme-preset-btn" data-preset="tide"    type="button"><span class="tp-dot" style="--tp-a:#3b82f6;--tp-b:#000"></span>Tide</button>
+                <button class="theme-preset-btn" data-preset="slate"   type="button"><span class="tp-dot" style="--tp-a:#7c93ad;--tp-b:#000"></span>Slate</button>
+                <button class="theme-preset-btn" data-preset="cyber"   type="button"><span class="tp-dot" style="--tp-a:#ff37c6;--tp-b:#000"></span>Cyber</button>
+                <button class="theme-preset-btn" data-preset="citrus"  type="button"><span class="tp-dot" style="--tp-a:#ffb521;--tp-b:#000"></span>Citrus</button>
+                <button class="theme-preset-btn" data-preset="royal"   type="button"><span class="tp-dot" style="--tp-a:#a06bff;--tp-b:#000"></span>Royal</button>
+                <button class="theme-preset-btn" data-preset="ice"     type="button"><span class="tp-dot" style="--tp-a:#7fe5ff;--tp-b:#000"></span>Ice</button>
+                <button class="theme-preset-btn" data-preset="mono"    type="button"><span class="tp-dot" style="--tp-a:#f5f5f7;--tp-b:#000"></span>Mono</button>
+                <button class="theme-more-btn" id="themeMoreBtn" type="button" aria-label="More themes">+ More</button>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="theme-gallery-section" id="themeGallerySection" hidden>
+            <div class="theme-gallery-tabs">
+              <span class="theme-gallery-label">Gallery</span>
+              <button class="theme-gallery-tab is-active" data-category="all" type="button">All</button>
+              <button class="theme-gallery-tab" data-category="classic" type="button">Classic</button>
+              <button class="theme-gallery-tab" data-category="code" type="button">Code</button>
+              <button class="theme-gallery-tab" data-category="nature" type="button">Nature</button>
+              <button class="theme-gallery-tab" data-category="film" type="button">Film</button>
+              <button class="theme-gallery-tab" data-category="designer" type="button">Designer</button>
+            </div>
+            <div class="theme-gallery-list" id="themeGalleryList">
+              
+            </div>
+          </div>
+
+          
+          <div class="appearance-row">
+            <div class="appearance-row-label">
+              <div class="appearance-row-title">Accent &amp; Theme</div>
+              <div class="appearance-row-sub">Primary colour and light/dark mode</div>
+            </div>
+            <div class="appearance-row-ctrl appearance-row-ctrl--wrap">
+              <div class="theme-swatches" id="appearanceSwatches">
+                <button class="theme-swatch" data-theme="blue"   title="Blue (default)" style="--sw-color:#5b8cff" type="button"></button>
+                <button class="theme-swatch" data-theme="purple" title="Purple"          style="--sw-color:#a56fff" type="button"></button>
+                <button class="theme-swatch" data-theme="green"  title="Green"           style="--sw-color:#38e4a8" type="button"></button>
+                <button class="theme-swatch" data-theme="amber"  title="Amber"           style="--sw-color:#ffb84d" type="button"></button>
+                <button class="theme-swatch" data-theme="red"    title="Red"             style="--sw-color:#ff5f72" type="button"></button>
+                <button class="theme-swatch" data-theme="cyan"   title="Cyan"            style="--sw-color:#3ad8ff" type="button"></button>
+              </div>
+              <div class="appearance-options">
+                <button class="appearance-opt" data-thememode="dark"  type="button">Dark</button>
+                <button class="appearance-opt" data-thememode="light" type="button">Light</button>
+              </div>
+              <label class="appearance-custom-color">
+                <input type="color" id="appearanceCustomColor" value="#5b8cff" aria-label="Custom accent colour" />
+                <span>Custom</span>
+              </label>
+              <button class="btn ghost sm" id="appearanceCustomClear" type="button">Clear</button>
+              <span class="appearance-selected-label">Accent: <strong id="appearanceAccentName">Blue</strong></span>
+            </div>
+          </div>
+
+          
+          <details class="app-fold">
+            <summary>Switch colour <span class="app-fold-hint">Toggle colour — defaults to your accent</span></summary>
+            <div class="appearance-row appearance-row--nested">
+              <div class="appearance-row-ctrl appearance-row-ctrl--wrap">
+                <div class="theme-swatches" id="appearanceSwitchSwatches">
+                  <button class="theme-swatch is-active" data-switch="inherit" title="Inherit from Accent" style="--sw-color:transparent; border:1px dashed var(--c-border-hi);" type="button"></button>
+                  <button class="theme-swatch" data-switch="#3b82f6" title="Blue"   style="--sw-color:#3b82f6" type="button"></button>
+                  <button class="theme-swatch" data-switch="#a06bff" title="Purple" style="--sw-color:#a06bff" type="button"></button>
+                  <button class="theme-swatch" data-switch="#3ddc8e" title="Green"  style="--sw-color:#3ddc8e" type="button"></button>
+                  <button class="theme-swatch" data-switch="#ffb521" title="Amber"  style="--sw-color:#ffb521" type="button"></button>
+                  <button class="theme-swatch" data-switch="#ff4f4f" title="Red"    style="--sw-color:#ff4f4f" type="button"></button>
+                  <button class="theme-swatch" data-switch="#7fe5ff" title="Cyan"   style="--sw-color:#7fe5ff" type="button"></button>
+                </div>
+                <label class="appearance-custom-color">
+                  <input type="color" id="appearanceCustomSwitchColor" value="#5b8cff" aria-label="Custom switch colour" />
+                  <span>Custom</span>
+                </label>
+                <button class="btn ghost sm" id="appearanceSwitchClear" type="button">Clear</button>
+                <span class="appearance-selected-label">Switch: <strong id="appearanceSwitchName">Inherit</strong></span>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        
+        <section class="bypass-sec is-med app-zone app-zone--surface">
+          <div class="bypass-sec-head">
+            <span class="bypass-sec-eyebrow">Surface &amp; Shape</span>
+            <span class="bypass-sec-hint">Material, geometry, and edges</span>
+          </div>
+
+          
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Corner Radius</div><div class="appearance-row-sub">Sharpness of card and element corners</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options appearance-options--visual">
+                <button class="appearance-opt opt-shape" data-radius="sharp" type="button"><span class="opt-glyph opt-glyph--r-sharp"></span><span class="opt-label">Sharp</span></button>
+                <button class="appearance-opt opt-shape" data-radius="soft"  type="button"><span class="opt-glyph opt-glyph--r-soft"></span><span class="opt-label">Soft</span></button>
+                <button class="appearance-opt opt-shape" data-radius="round" type="button"><span class="opt-glyph opt-glyph--r-round"></span><span class="opt-label">Round</span></button>
+                <button class="appearance-opt opt-shape" data-radius="pill"  type="button"><span class="opt-glyph opt-glyph--r-pill"></span><span class="opt-label">Pill</span></button>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Card Style</div><div class="appearance-row-sub">Border weight and elevation on panels</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options appearance-options--visual">
+                <button class="appearance-opt opt-shape" data-cardstyle="flat"     type="button"><span class="opt-glyph opt-glyph--c-flat"></span><span class="opt-label">Flat</span></button>
+                <button class="appearance-opt opt-shape" data-cardstyle="bordered" type="button"><span class="opt-glyph opt-glyph--c-bordered"></span><span class="opt-label">Bordered</span></button>
+                <button class="appearance-opt opt-shape" data-cardstyle="elevated" type="button"><span class="opt-glyph opt-glyph--c-elevated"></span><span class="opt-label">Elevated</span></button>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Surface</div><div class="appearance-row-sub">Card backdrop &amp; transparency</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options appearance-options--visual">
+                <button class="appearance-opt opt-shape" data-surface="solid"   type="button"><span class="opt-glyph opt-glyph--s-solid"></span><span class="opt-label">Solid</span></button>
+                <button class="appearance-opt opt-shape" data-surface="frosted" type="button"><span class="opt-glyph opt-glyph--s-frosted"></span><span class="opt-label">Frosted</span></button>
+                <button class="appearance-opt opt-shape" data-surface="glass"   type="button"><span class="opt-glyph opt-glyph--s-glass"></span><span class="opt-label">Glass</span></button>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Borders</div><div class="appearance-row-sub">Outline weight on cards and inputs</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options appearance-options--visual">
+                <button class="appearance-opt opt-shape" data-border="hairline" type="button"><span class="opt-glyph opt-glyph--b-hairline"></span><span class="opt-label">Hairline</span></button>
+                <button class="appearance-opt opt-shape" data-border="normal"   type="button"><span class="opt-glyph opt-glyph--b-normal"></span><span class="opt-label">Normal</span></button>
+                <button class="appearance-opt opt-shape" data-border="bold"     type="button"><span class="opt-glyph opt-glyph--b-bold"></span><span class="opt-label">Bold</span></button>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Button Finish</div><div class="appearance-row-sub">Surface treatment for action buttons</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options appearance-options--visual">
+                <button class="appearance-opt opt-shape" data-btnstyle="flat"  type="button"><span class="opt-glyph opt-glyph--f-flat"></span><span class="opt-label">Flat</span></button>
+                <button class="appearance-opt opt-shape" data-btnstyle="glass" type="button"><span class="opt-glyph opt-glyph--f-glass"></span><span class="opt-label">Glass</span></button>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Button Shape</div><div class="appearance-row-sub">Variant emphasis used across buttons</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options">
+                <button class="appearance-opt" data-btnshape="primary" type="button">Primary</button>
+                <button class="appearance-opt" data-btnshape="ghost"   type="button">Ghost</button>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Background</div><div class="appearance-row-sub">App backdrop treatment</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options">
+                <button class="appearance-opt" data-background="solid"   type="button">Solid</button>
+                <button class="appearance-opt" data-background="ambient" type="button">Ambient</button>
+                <button class="appearance-opt" data-background="grid"    type="button">Grid</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        
+        <section class="bypass-sec is-med app-zone app-zone--motion">
+          <div class="bypass-sec-head">
+            <span class="bypass-sec-eyebrow">Motion</span>
+            <span class="bypass-sec-hint">Animation speed, glow, and density rhythm</span>
+          </div>
+
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Animations</div><div class="appearance-row-sub">Speed of transitions and motion effects</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options">
+                <button class="appearance-opt" data-anim="off"       type="button">Off</button>
+                <button class="appearance-opt" data-anim="reduced"   type="button">Reduced</button>
+                <button class="appearance-opt" data-anim="normal"    type="button">Normal</button>
+                <button class="appearance-opt" data-anim="energetic" type="button">Energetic</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Glow &amp; Effects</div><div class="appearance-row-sub">Aura intensity on cards, borders and buttons</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options">
+                <button class="appearance-opt" data-glow="none"    type="button">Off</button>
+                <button class="appearance-opt" data-glow="subtle"  type="button">Subtle</button>
+                <button class="appearance-opt" data-glow="normal"  type="button">Normal</button>
+                <button class="appearance-opt" data-glow="strong"  type="button">Strong</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">UI Density</div><div class="appearance-row-sub">Spacing and padding throughout the interface</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options">
+                <button class="appearance-opt" data-density="compact"  type="button">Compact</button>
+                <button class="appearance-opt" data-density="normal"   type="button">Normal</button>
+                <button class="appearance-opt" data-density="relaxed"  type="button">Relaxed</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        
+        <section class="bypass-sec soft app-zone app-zone--type">
+          <div class="bypass-sec-head">
+            <span class="bypass-sec-eyebrow">Typography</span>
+            <span class="bypass-sec-hint">Typeface and base scale</span>
+          </div>
+
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Font</div><div class="appearance-row-sub">Typeface used across the interface</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options">
+                <button class="appearance-opt" data-font="system"  type="button" style='font-family:"Segoe UI","SF Pro Text",system-ui,sans-serif'>System</button>
+                <button class="appearance-opt" data-font="serif"   type="button" style='font-family:Georgia,Cambria,"Times New Roman",serif'>Serif</button>
+                <button class="appearance-opt" data-font="rounded" type="button" style='font-family:"Trebuchet MS",Tahoma,sans-serif'>Rounded</button>
+                <button class="appearance-opt" data-font="soft"    type="button" style='font-family:Candara,"Gill Sans","Segoe UI",sans-serif'>Soft</button>
+                <button class="appearance-opt" data-font="wide"    type="button" style='font-family:Verdana,Geneva,Tahoma,sans-serif'>Wide</button>
+                <button class="appearance-opt" data-font="mono"    type="button" style='font-family:Consolas,"Lucida Console",monospace'>Mono</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Text Size</div><div class="appearance-row-sub">Base font scale for readability</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options">
+                <button class="appearance-opt" data-fontscale="small"  type="button">Small</button>
+                <button class="appearance-opt" data-fontscale="normal" type="button">Normal</button>
+                <button class="appearance-opt" data-fontscale="large"  type="button">Large</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        
+        <section class="bypass-sec soft app-zone app-zone--layout">
+          <div class="bypass-sec-head">
+            <span class="bypass-sec-eyebrow">Layout</span>
+            <span class="bypass-sec-hint">Where things appear, and accessibility extras</span>
+          </div>
+
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Toast Position</div><div class="appearance-row-sub">Where in-page notifications appear</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="toast-pos-grid">
+                <button class="toast-pos-btn" data-toast="top-left"     type="button"><span>↖</span><small>Top Left</small></button>
+                <button class="toast-pos-btn" data-toast="top-right"    type="button"><span>↗</span><small>Top Right</small></button>
+                <button class="toast-pos-btn" data-toast="bottom-left"  type="button"><span>↙</span><small>Bottom Left</small></button>
+                <button class="toast-pos-btn" data-toast="bottom-right" type="button"><span>↘</span><small>Bottom Right</small></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Detector Position</div><div class="appearance-row-sub">Where the gateway-detected badge appears on a page</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="toast-pos-grid">
+                <button class="toast-pos-btn" data-detector="top-left"     type="button"><span>↖</span><small>Top Left</small></button>
+                <button class="toast-pos-btn" data-detector="top-right"    type="button"><span>↗</span><small>Top Right</small></button>
+                <button class="toast-pos-btn is-active" data-detector="bottom-left"  type="button"><span>↙</span><small>Bottom Left</small></button>
+                <button class="toast-pos-btn" data-detector="bottom-right" type="button"><span>↘</span><small>Bottom Right</small></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="appearance-row">
+            <div class="appearance-row-label"><div class="appearance-row-title">Campaign Banner</div><div class="appearance-row-sub">Show the featured banner in full, or as a slim one-line strip</div></div>
+            <div class="appearance-row-ctrl">
+              <div class="appearance-options">
+                <button class="appearance-opt is-active" data-campaignbanner="full"    type="button">Show full</button>
+                <button class="appearance-opt" data-campaignbanner="minimal" type="button">Show minimal</button>
+              </div>
+            </div>
+          </div>
+
+          <details class="app-fold">
+            <summary>Accessibility extras <span class="app-fold-hint">Contrast and scrollbar appearance</span></summary>
+            <div class="appearance-row appearance-row--nested">
+              <div class="appearance-row-label"><div class="appearance-row-title">Contrast</div><div class="appearance-row-sub">Boost text contrast for accessibility</div></div>
+              <div class="appearance-row-ctrl">
+                <div class="appearance-options">
+                  <button class="appearance-opt" data-contrast="normal" type="button">Normal</button>
+                  <button class="appearance-opt" data-contrast="high"   type="button">High</button>
+                </div>
+              </div>
+            </div>
+            <div class="appearance-row appearance-row--nested">
+              <div class="appearance-row-label"><div class="appearance-row-title">Scrollbar</div><div class="appearance-row-sub">Scrollbar appearance</div></div>
+              <div class="appearance-row-ctrl">
+                <div class="appearance-options">
+                  <button class="appearance-opt" data-scrollbar="accent"  type="button">Accent</button>
+                  <button class="appearance-opt" data-scrollbar="neutral" type="button">Neutral</button>
+                  <button class="appearance-opt" data-scrollbar="hidden"  type="button">Hidden</button>
+                </div>
+              </div>
+            </div>
+          </details>
+        </section>
+
+      </section>
+
+      
+
+      <!-- Gateway Import: Preview Modal (redesigned) -->
+      <div class="modal-overlay" id="gwImportPreview" hidden role="dialog" aria-modal="true" aria-labelledby="gwImportPreviewTitle">
+        <div class="modal-content gw-import-preview-content">
+          <div class="modal-head">
+            <h3 class="modal-title" id="gwImportPreviewTitle">Import Payment Request</h3>
+            <span class="modal-subtitle" id="gwImportPreviewSubtitle"></span>
+            <button class="modal-close" id="gwImportPreviewClose" type="button" aria-label="Close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="gw-import-pattern-line">
+              <span class="gw-import-pattern-label">Pattern:</span>
+              <code class="gw-import-pattern-value" id="gwImportPatternValue"></code>
+            </div>
+
+            <div class="input-group gw-import-name-group">
+              <input id="gwImportName" placeholder=" " autocomplete="off" spellcheck="false" />
+              <label for="gwImportName">Name</label>
+            </div>
+
+            <div class="gw-import-required-tags" id="gwImportRequiredTags" hidden>
+              <span class="gw-import-required-tags-label">Required:</span>
+              <div class="gw-import-required-tags-list" id="gwImportRequiredTagsList"></div>
+            </div>
+
+            <div class="gw-import-field-head">
+              <span class="gw-import-field-head-label">Detected Fields</span>
+              <div class="gw-import-field-head-toggles">
+                <span class="gw-import-legend-dot gw-import-legend-dot--card" aria-hidden="true"></span><span class="gw-import-legend-label">Card</span>
+                <span class="gw-import-legend-dot gw-import-legend-dot--req" aria-hidden="true"></span><span class="gw-import-legend-label">Req</span>
+                <span class="gw-import-legend-dot gw-import-legend-dot--rem" aria-hidden="true"></span><span class="gw-import-legend-label">Rem</span>
+                <span class="gw-import-legend-dot gw-import-legend-dot--ign" aria-hidden="true"></span><span class="gw-import-legend-label">Ignore</span>
+              </div>
+            </div>
+
+            <div class="gw-import-bulk-actions" id="gwImportBulkActions">
+              <span class="gw-import-bulk-actions-label">Quick:</span>
+              <button class="gw-import-bulk-btn" id="gwImportBulkCard" type="button">All Card</button>
+              <button class="gw-import-bulk-btn" id="gwImportBulkIgnore" type="button">All Ignore</button>
+              <button class="gw-import-bulk-btn" id="gwImportBulkReset" type="button">Reset</button>
+            </div>
+
+            <div class="gw-import-fields-table" id="gwImportFieldsTable"></div>
+
+            <div class="gw-import-warnings" id="gwImportWarnings" hidden></div>
+
+            <div class="gw-import-summary" id="gwImportSummary"></div>
+
+            <details class="gw-import-dropped" id="gwImportDropped" hidden>
+              <summary id="gwImportDroppedSummary"></summary>
+              <div class="gw-import-dropped-list" id="gwImportDroppedHeaders"></div>
+              <div class="gw-import-dropped-list" id="gwImportDroppedFlags"></div>
+            </details>
+          </div>
+          <div class="modal-foot">
+            <button class="btn ghost" id="gwImportDiscardBtn" type="button">Cancel</button>
+            <button class="btn primary" id="gwImportApplyBtn" type="button">Apply to Form</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gateway Import: Field row template -->
+      <template id="gwImportFieldRowTpl">
+        <div class="gw-import-field-row">
+          <span class="gw-import-field-path"></span>
+          <span class="gw-import-field-arrow" aria-hidden="true">&rarr;</span>
+          <span class="gw-import-field-type"></span>
+          <span class="gw-import-field-conf"></span>
+          <span class="gw-import-field-subtype-wrap" hidden>
+            <select class="gw-import-field-subtype"></select>
+          </span>
+          <div class="gw-import-field-toggles" role="radiogroup">
+            <label class="gw-import-field-toggle is-active"><input type="radio" name="" value="card" hidden /><span class="gw-import-field-toggle-label">Card</span></label>
+            <label class="gw-import-field-toggle"><input type="radio" name="" value="req" hidden /><span class="gw-import-field-toggle-label">Req</span></label>
+            <label class="gw-import-field-toggle"><input type="radio" name="" value="rem" hidden /><span class="gw-import-field-toggle-label">Rem</span></label>
+            <label class="gw-import-field-toggle"><input type="radio" name="" value="ignore" hidden /><span class="gw-import-field-toggle-label">Ignore</span></label>
+          </div>
+        </div>
+      </template>
+
+      <!-- Gateway Import: Picker Modal -->
+      <div class="modal-overlay" id="gwImportPicker" hidden role="dialog" aria-modal="true" aria-labelledby="gwImportPickerTitle">
+        <div class="modal-content gw-import-picker-content">
+          <div class="modal-head">
+            <h3 class="modal-title" id="gwImportPickerTitle">Multiple requests detected</h3>
+            <span class="modal-subtitle">Pick one to import</span>
+            <button class="modal-close" id="gwImportPickerClose" type="button" aria-label="Close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="gw-import-picker-list" id="gwImportPickerList"></div>
+          </div>
+          <div class="modal-foot">
+            <button class="btn ghost" id="gwImportPickerCancelBtn" type="button">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gateway Type Templates Modal -->
+      <div class="modal-overlay" id="gwTemplatesModal" hidden role="dialog" aria-modal="true" aria-labelledby="gwTemplatesModalTitle">
+        <div class="modal-content">
+          <div class="modal-head">
+            <h3 class="modal-title" id="gwTemplatesModalTitle">Gateway Type Templates</h3>
+            <span class="modal-subtitle">Pick a template to pre-fill card field paths</span>
+            <button class="modal-close" id="gwTemplatesModalClose" type="button" aria-label="Close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="gw-templates-grid" id="gwTemplatesGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer-note" id="globalStatus">Ready.</footer>
+    </main>
+  </div>
+
+  <script src="functions/gateway-import.js" defer></script>
+  <script src="assets/library/anime.min.js" defer></script>
+  <script src="functions/dashboard-core.js" defer></script>
+</body>
+</html>

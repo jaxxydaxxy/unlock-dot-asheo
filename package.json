@@ -13,7 +13,9 @@
     "web": "node web/patch-server.js",
     "test:web": "node web/test.js",
     "inspect": "node tools/inspect.js dot",
-    "profiles": "node --experimental-vm-modules tools/emit_patches.js dot --save"
+    "profiles": "node --experimental-vm-modules tools/emit_patches.js dot --save",
+    "build:release": "node build_release.js",
+    "build:asheo": "node tools/asheo_unlock.js ../asheo-latest"
   },
   "devDependencies": {
     "puppeteer": "^23.11.1"

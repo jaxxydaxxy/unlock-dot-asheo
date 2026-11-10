@@ -2,11 +2,21 @@ node_modules/
 npm-debug.log*
 .DS_Store
 
-# The extension itself is third-party software and is NOT redistributed here.
-# Supply your own unpacked copy of the official release; see README.md.
-dot/
-dot_backup_orig/
+# Working copies of the extension.
+# The official sources are committed under extensions/ - the patterns below are
+# anchored to the repository root so they do not match extensions/<name>/.
+/dot/
+/dot_backup_orig/
+/asheo/
+/asheo-latest/
+/asheo-patched/
+
+# Work in progress: the string decoder for a third extension whose
+# anti-tamper rotation is not solved yet.
+tools/decode_obfuscator.mjs
 
 # Build output
-dot-unlocked.zip
-.outdir/
+/dot-unlocked.zip
+/asheo-unlocked.zip
+/dist/
+/.outdir/

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asheo — Before you begin</title>
+  <link rel="stylesheet" href="assets/css/popup-premium.css" />
+</head>
+<body class="disclaimer-body" data-preset="carbon">
+  <main class="disclaimer-shell">
+    <section class="disclaimer-card" role="dialog" aria-labelledby="dscTitle" aria-describedby="dscBody">
+      <div class="disclaimer-head">
+        <div class="brand-logo disclaimer-logo" aria-hidden="true"><img class="brand-logo-mark" src="assets/icons/icon128.png" alt="" draggable="false" /></div>
+        <div class="disclaimer-head-copy">
+          <span class="disclaimer-kicker">Developer &amp; QA tool</span>
+          <h1 id="dscTitle">Welcome to Asheo</h1>
+          <p class="disclaimer-sub">Read the terms below — this appears only once.</p>
+        </div>
+      </div>
+
+      <div class="disclaimer-scroll-outer">
+        <div class="disclaimer-progress" aria-hidden="true"><div class="disclaimer-progress-fill" id="dscProgress"></div></div>
+        <div class="disclaimer-scroll" id="dscBody" tabindex="0" role="region" aria-label="Terms of use">
+          <p class="disclaimer-lead"><strong>Asheo is a developer &amp; QA testing tool.</strong>
+          It intercepts payment requests in your own browser so you can inspect, simulate, and
+          debug payment integrations — without hand-typing test card data on every attempt.</p>
+
+          <section class="disclaimer-section">
+            <h2 class="disclaimer-section-title"><span class="disclaimer-section-num">01</span>Authorized use only</h2>
+            <p>Use Asheo <strong>only</strong> on systems, accounts, and payment integrations that
+            you own or are explicitly authorized to test. Using it against systems you have no
+            permission to test is a violation of these terms — and likely of the law.</p>
+          </section>
+
+          <section class="disclaimer-section">
+            <h2 class="disclaimer-section-title"><span class="disclaimer-section-num">02</span>Your responsibility</h2>
+            <p>You are solely responsible for ensuring your use complies with all applicable laws
+            and regulations, and with the terms of service of every site and payment provider
+            you interact with while testing.</p>
+          </section>
+
+          <section class="disclaimer-section">
+            <h2 class="disclaimer-section-title"><span class="disclaimer-section-num">03</span>Data stays on this device</h2>
+            <p>Asheo does <strong>not</strong> store your card data on any server. Generated cards,
+            logs, and test data stay in your browser's local storage on this device. Clearing
+            logs removes them permanently.</p>
+          </section>
+
+          <section class="disclaimer-section">
+            <h2 class="disclaimer-section-title"><span class="disclaimer-section-num">04</span>Card data is shown unmasked</h2>
+            <p>Card values in logs are displayed <strong>in full, unmasked — by design</strong>,
+            because this is a testing tool and QA engineers need to verify exactly what was sent.
+            Keep your device secure, and clear your logs when you're done testing.</p>
+          </section>
+
+          <section class="disclaimer-section">
+            <h2 class="disclaimer-section-title"><span class="disclaimer-section-num">05</span>No warranty</h2>
+            <p>The software is provided <strong>"as is"</strong>, without warranty of any kind,
+            express or implied. The authors accept no liability for misuse, or for any loss
+            arising from its use.</p>
+          </section>
+
+          <p class="disclaimer-fine">By continuing, you confirm that you have read and understood
+          the above, and that you will use Asheo lawfully and responsibly.</p>
+        </div>
+        <div class="disclaimer-scroll-hint" id="dscHint" aria-hidden="true">
+          <span class="disclaimer-scroll-hint-arrow">↓</span> Scroll to the bottom to continue
+        </div>
+      </div>
+
+      <div class="disclaimer-actions">
+        <button class="btn ghost" id="dscDecline" type="button">Decline &amp; close</button>
+        <button class="btn primary" id="dscAgree" type="button" disabled>Read the terms to continue</button>
+      </div>
+      <p class="disclaimer-status" id="dscStatus" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="functions/disclaimer.js" defer></script>
+</body>
+</html>

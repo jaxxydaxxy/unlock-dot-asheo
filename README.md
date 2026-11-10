@@ -10,8 +10,15 @@ patches a copy of the official extension so every premium feature is enabled,
 plus the analysis notes explaining how the gate (and the extension's two
 anti-tamper mechanisms) actually work.
 
-> You supply the extension. This repo does **not** redistribute it — point the
-> tools at your own unpacked copy of the official release.
+The official releases are committed under `extensions/` so the build is
+reproducible and a release can be made with one command. If you would
+rather work from your own copy, point the tools at it — they take the tree
+to patch as their argument:
+
+```bash
+node unlock_dot.js /path/to/your/dot
+node tools/asheo_unlock.js /path/to/your/asheo
+```
 
 **Two extensions, one repo:**
 
@@ -620,12 +627,61 @@ server, the premium tier is local.
 | `No payment rules found.` | the *server facing* state was faked as well; the cached entitlement has to stay the real (free tier) one, see "What is deliberately not patched" above |
 | `Timeout: entitlement.refresh` | the activation token was faked; it has to stay the real one |
 
+## Releases
+
+The patched extensions are built by GitHub Actions from the sources in
+`extensions/`:
+
+```bash
+# locally
+npm install
+node build_release.js          # -> dist/*.zip
+```
+
+```bash
+# a release: tag it and push the tag
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The **release** workflow then builds both extensions and attaches the
+archives to the GitHub release:
+
+| archive | extension |
+|---|---|
+| `dot-bypasser-4.6.6-unlocked.zip` | Dot Bypasser 4.6.6 |
+| `asheo-1.6.2-unlocked.zip` | Asheo 1.6.2 |
+
+Each archive contains a single folder, so unzipping it and loading that
+folder with `chrome://extensions` -> Developer mode -> **Load unpacked**
+is all it takes.
+
+The **ci** workflow runs on every push and pull request: it checks that the
+build profiles still match the committed sources, builds both extensions, and
+loads the result in headless Chrome - the same check the release does, minus
+the publishing.
+
+The build is a straight patch of the official sources, so it fails loudly
+when a release changes the patch sites instead of quietly shipping a
+half-patched extension.
+
+---
+
 ## Repo layout
 
 ```
 unlock_dot.js            the patcher: premium edits + anti-tamper prelude
 build_zip.js              packages an extension tree into a distributable zip
+build_release.js          builds both extensions for a release (dist/*.zip)
 UNLOCK_NOTES.md           full technical write-up (gate, guards, nag)
+
+extensions/
+  dot-bypasser/           the official Dot Bypasser 4.6.6 release
+  asheo/                  the official Asheo 1.6.2 release
+
+.github/workflows/
+  ci.yml                  build + verify on every push
+  release.yml             build and publish the release archives
 
 web/
   patch-server.js         the patch website (upload -> patched download)
@@ -691,12 +747,20 @@ harness/                  puppeteer verification (headless Chrome)
 
 ## Legal
 
-This repository contains **only tooling and analysis notes** (MIT, see
-`LICENSE`). It does not contain the Dot Bypasser extension itself — you
-supply your own copy of the official release, and the tools modify it locally
-on your machine.
+The tooling and the analysis notes in this repository are MIT licensed (see
+`LICENSE`).
 
-Dot Bypasser is third-party software by its respective authors; it is not
-affiliated with or endorsed by this project. Use it only in accordance with
-its licence and with applicable law, and only for legitimate purposes you
-are authorised to carry out.
+The `extensions/` directory holds the **unmodified official releases** of
+Dot Bypasser 4.6.6 and Asheo 1.6.2, so the release build is reproducible
+and a release can be produced without checking anything out first. They are
+third-party software, they are redistributed here unmodified, and they keep
+their own licences and copyright notices.
+
+The **patches** are what this project adds: the releases this workflow
+publishes are the official extensions with the premium checks modified
+locally.
+
+Dot Bypasser and Asheo are third-party software by their respective
+authors; this project is not affiliated with or endorsed by them. Use them
+only in accordance with their licences and with applicable law, and only
+for legitimate purposes you are authorised to carry out.

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asheo — Integrity check failed</title>
+  <link rel="stylesheet" href="assets/css/popup-premium.css" />
+</head>
+<body class="disclaimer-body ie-body" data-preset="inferno">
+  <main class="disclaimer-shell">
+    <section class="disclaimer-card ie-card" role="alertdialog" aria-labelledby="ieTitle" aria-describedby="ieBody">
+      <div class="disclaimer-head">
+        <div class="brand-logo disclaimer-logo ie-logo" aria-hidden="true"><img class="brand-logo-mark" src="assets/icons/icon128.png" alt="" draggable="false" /></div>
+        <div class="disclaimer-head-copy">
+          <span class="disclaimer-kicker ie-kicker">Security · Integrity guard</span>
+          <h1 id="ieTitle">Integrity check failed</h1>
+          <p class="disclaimer-sub">Asheo won't run with modified files.</p>
+        </div>
+      </div>
+
+      <div class="disclaimer-scroll" id="ieBody">
+        <p>This copy of Asheo did not pass its startup integrity check. One or more
+        packaged files are <strong>modified, missing, or renamed</strong>, or the
+        extension manifest was altered.</p>
+
+        <div class="ie-steps">
+          <p class="ie-steps-title">To restore it</p>
+          <ol class="ie-steps-list">
+            <li><span class="ie-step-n">1</span><span>Remove this copy from <code>chrome://extensions</code>.</span></li>
+            <li><span class="ie-step-n">2</span><span>Re-install the original, unmodified Asheo build from a trusted source.</span></li>
+          </ol>
+        </div>
+
+        <p class="ie-warn"><strong>Why are you trying to tamper with Asheo?</strong> This build is
+        signed and verified on every startup. Patching, repacking, or reverse-engineering it to
+        strip protections or forge entitlements is detected here — and it stops the extension cold.
+        Don't. Use the official build and it just works.</p>
+
+        <p class="disclaimer-fine">If you did not modify anything, your files may be
+        corrupted or have been changed by another program — reinstall from a trusted source.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

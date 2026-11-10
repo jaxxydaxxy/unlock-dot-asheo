@@ -181,10 +181,36 @@ async function pickProfileFromTree(root) {
   return pickProfile(v.manifestHash);
 }
 
+/**
+ * The profile of a tree on disk, with the reason it did not match.
+ *
+ * @returns {Promise<{profile: object|null, version: string|null,
+ *                     problems: string[]}>}
+ */
+async function identifyTree(root) {
+  const read = (name) => {
+    const p = path.join(root, name);
+    if (!fs.existsSync(p)) return undefined;
+    return fs.readFileSync(p);
+  };
+  const v = await verifyOfficial(read);
+  if (!v.ok) return { profile: null, version: v.version, problems: v.problems };
+  const profile = pickProfile(v.manifestHash);
+  if (!profile) {
+    return {
+      profile: null,
+      version: v.version,
+      problems: [`Asheo ${v.version || 'this build'} is not known to the patcher yet`],
+    };
+  }
+  return { profile, version: v.version, problems: [] };
+}
+
 module.exports = {
   load,
   pickProfile,
   pickProfileFromTree,
+  identifyTree,
   verifyOfficial,
   BUILD_PUBLIC_JWK,
 };
