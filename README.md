@@ -446,7 +446,7 @@ Reproduce it yourself:
 npm install                              # pulls puppeteer
 node harness/asheo.js ./asheo            # -> PAYMENT RULES 45/45, "Premium active"
 node harness/asheo.js ./asheo-patched    # -> the same, plus the premium banner
-node harness/asheo_feature.js ./asheo-patched   # -> all seven toggles "ok"
+node harness/asheo_feature.js ./asheo-patched   # -> every toggle that sends a message answers "ok"
 ```
 
 ### The patch sites live in a profile
@@ -586,7 +586,16 @@ node harness/asheo_feature.js ./asheo-patched   # click every premium toggle
 ```
 
 `asheo_feature.js` clicks the toggles of the premium panel and prints what the
-worker answers - before the patch:
+worker answers. It reads the *worker's* answer, not the text the popup
+shows - the popup displays a success message even when the worker refused
+the feature, which is what made this look broken in the first place.
+
+The three "Device persona" checkboxes report **no message**: they are
+sub-settings of the persona configuration and are written with it, so
+clicking one on its own sends nothing to the worker. Every toggle that
+does send a message answers "ok".
+
+Before the patch:
 
 ```
 Enable persona: FAIL "Premium check failed. Try again."
