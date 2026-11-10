@@ -1,0 +1,93 @@
+name: release
+
+# Builds the patched extensions and attaches them to a GitHub release.
+#
+# The official sources are committed under extensions/. The build patches a
+# copy of them (build_release.js) and zips the result, so every release is
+# reproducible from the same input.
+#
+# A release is made by pushing a tag:
+#
+#     git tag v1.0.0 && git push origin v1.0.0
+#
+# or by running the workflow manually (workflow_dispatch), which publishes
+# to a rolling "latest" tag.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish the release under'
+        required: false
+        default: 'latest'
+
+permissions:
+  contents: write   # to create the release and upload the assets
+
+jobs:
+  build:
+    name: build and release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check out
+        uses: actions/checkout@v4
+
+      - name: set up node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # zip and unzip are used to package the extensions
+      - name: install the tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip unzip
+          npm ci --no-audit --no-fund
+
+      - name: build the extensions
+        run: node build_release.js dist
+
+      - name: check the archives
+        run: |
+          set -e
+          for f in dist/*.zip; do
+            echo "--- $f"
+            unzip -l "$f" | tail -n +2 | head -3
+            unzip -t "$f" | tail -1
+          done
+          ls -la dist
+
+      - name: upload the archives as workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: unlocked-extensions
+          path: dist/*.zip
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: publish the release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: ${{ github.event.inputs.tag || github.ref_name }}
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          body: |
+            Patched builds of the extensions this repo unlocks.
+
+            | archive | extension |
+            |---|---|
+            | `dot-bypasser-*-unlocked.zip` | Dot Bypasser 4.6.6 |
+            | `asheo-*-unlocked.zip` | Asheo 1.6.2 |
+
+            Unzip one and load the folder it contains with
+            `chrome://extensions` -> Developer mode -> **Load unpacked**.
+
+            The archives are built from the official releases in
+            `extensions/` by `build_release.js`.
+          files: |
+            dist/*.zip

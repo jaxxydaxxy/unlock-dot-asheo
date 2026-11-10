@@ -1,0 +1,78 @@
+name: ci
+
+# Verifies the tooling and the built extensions on every push.
+#
+# The extension sources live in extensions/, so the build runs against them
+# and the result is loaded in headless Chrome - the same check the release
+# workflow does, just without publishing anything.
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: build and verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check out
+        uses: actions/checkout@v4
+
+      - name: set up node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: install the tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip unzip
+          npm ci --no-audit --no-fund
+
+      - name: the build profiles match the committed sources
+        run: |
+          set -e
+          node -e '
+            const { pickProfile } = require("./tools/profiles.js");
+            const p = pickProfile("extensions/dot-bypasser");
+            if (!p) {
+              console.error("no build profile matches extensions/dot-bypasser");
+              process.exit(1);
+            }
+            console.log("dot profile:", p.name);
+          '
+          node -e '
+            const { identifyTree } = require("./tools/asheo_profiles.js");
+            identifyTree("extensions/asheo").then((r) => {
+              if (!r.profile) {
+                console.error("no build profile matches extensions/asheo:", r.problems.join("; "));
+                process.exit(1);
+              }
+              console.log("asheo profile:", r.profile.name);
+            });
+          '
+
+      - name: build the extensions
+        run: node build_release.js dist
+
+      - name: the archives are intact
+        run: |
+          set -e
+          for f in dist/*.zip; do
+            unzip -t "$f" | tail -1
+          done
+
+      - name: load the built extensions in headless Chrome
+        run: |
+          set -e
+          mkdir -p /tmp/verify
+          unzip -q -o dist/dot-bypasser-*.zip -d /tmp/verify
+          unzip -q -o dist/asheo-*.zip -d /tmp/verify
+          node harness/final.js /tmp/verify/dot-bypasser
+          node harness/asheo.js /tmp/verify/asheo
